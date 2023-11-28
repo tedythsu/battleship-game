@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "junior-side-project": {
+    "battleship-game": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/junior-side-project",
+            "outputPath": "dist/battleship-game",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "junior-side-project:build:production"
+              "buildTarget": "battleship-game:build:production"
             },
             "development": {
-              "buildTarget": "junior-side-project:build:development"
+              "buildTarget": "battleship-game:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "junior-side-project:build"
+            "buildTarget": "battleship-game:build"
           }
         },
         "test": {
