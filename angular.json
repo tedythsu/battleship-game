@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "junior-side-project:build:production"
+              "buildTarget": "junior-side-project:build:production"
             },
             "development": {
-              "browserTarget": "junior-side-project:build:development"
+              "buildTarget": "junior-side-project:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "junior-side-project:build"
+            "buildTarget": "junior-side-project:build"
           }
         },
         "test": {
