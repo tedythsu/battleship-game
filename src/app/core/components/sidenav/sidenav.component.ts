@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SidenavService } from '../../services/sidenav.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -10,4 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class SidenavComponent {
 
+  constructor(private sidenav: SidenavService) { }
+
+  get isSidenavOpen() {
+    return this.sidenav.isSidenavOpen;
+  }
 }
