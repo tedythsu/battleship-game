@@ -1,7 +1,12 @@
-:host {
+.sidenav {
   height: calc(100vh - var(--header-height));
-  width: var(--sidenav-width);
+  width: 0;
   box-sizing: border-box;
-  background-color: rgb(237, 241, 243);
+  background-color: #C6CCD0;
   overflow-y: auto;
+  transition: 0.25s all cubic-bezier(.36,-0.01,0,.77);
+}
+
+.sidenav--open {
+  width: var(--sidenav-width);
 }
