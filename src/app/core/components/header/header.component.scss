@@ -1,5 +1,30 @@
-:host {
-  display: block;
+.header {
+  display: flex;
   height: var(--header-height);
-  background-color: rgb(13, 71, 161);
+  background-color: #000080;
+  padding: 1em;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 1em;
+  color: white;
+  box-shadow: 0 -6px 10px 5px rgba(0,0,0,0.5);
+
+  &__hamburger {
+    width: 30px;
+    cursor: pointer;
+    opacity: 1;
+    transition: all ease 0.25s;
+  }
+
+  &__hamburger:hover {
+    opacity: 0.5;
+  }
+
+  &__logo {
+    width: 30px;
+  }
+
+  &__title {
+    cursor: default;
+  }
 }
