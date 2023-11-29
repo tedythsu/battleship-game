@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SidenavService } from '../../services/sidenav.service';
 
 @Component({
   selector: 'app-header',
@@ -10,4 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
 
+  constructor(private sidenav: SidenavService) { }
+
+  public toggleSidenav() {
+    this.sidenav.toggle();
+  }
 }
