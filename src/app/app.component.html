@@ -1,9 +1,11 @@
 <app-header></app-header>
 
-<div class="sidenav-container">
+<div class="page-container">
   <app-sidenav></app-sidenav>
-  <div class="sidenav-container__content">
-    <router-outlet></router-outlet>
+  <div class="content-container">
+    <div class="content-container__main">
+      <router-outlet></router-outlet>
+    </div>
     <app-footer></app-footer>
   </div>
 </div>
