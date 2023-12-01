@@ -4,11 +4,13 @@
 
   .content-container {
     height: calc(100vh - var(--header-height));
+    padding-left: var(--sidenav-close-width);
     flex-grow: 1;
     overflow-y: auto;
 
     &__main {
       padding: 2rem 4rem;
+      min-height: calc(100% - var(--header-height) - var(--footer-height));
     }
   }
 }

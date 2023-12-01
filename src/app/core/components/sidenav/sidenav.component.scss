@@ -1,12 +1,22 @@
 .sidenav {
   height: calc(100vh - var(--header-height));
-  width: 0;
+  width: var(--sidenav-close-width);
   box-sizing: border-box;
-  background-color: #C6CCD0;
-  overflow-y: auto;
-  transition: 0.25s all cubic-bezier(.36,-0.01,0,.77);
+  background-color: black;
+  transition: 0.25s all cubic-bezier(.36, -0.01, 0, .77);
+  padding: 2rem 1rem;
+  position: fixed;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
 }
 
-.sidenav--open {
-  width: var(--sidenav-width);
+.sidenav:hover {
+  width: var(--sidenav-open-width);
 }
