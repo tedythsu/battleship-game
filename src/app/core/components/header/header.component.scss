@@ -1,13 +1,18 @@
 .header {
   display: flex;
+  justify-content: center;
   height: var(--header-height);
   background-color: var(--primary-color);
   padding: 1em;
   box-sizing: border-box;
   align-items: center;
-  gap: 1em;
+  gap: 0.5rem;
   color: white;
-  box-shadow: 0 -6px 10px 5px rgba(0,0,0,0.5);
+  box-shadow: 0 -6px 10px 5px rgba(0, 0, 0, 0.5);
+  border-image: linear-gradient(to left,
+      rgba(0, 0, 0, 1) 1%,
+      rgba(0, 255, 255, 1) 50%,
+      rgba(0, 0, 0, 1) 100%) 0 0 100% 0/0 0 3px 0 stretch;
 
   &__hamburger {
     width: 30px;
@@ -25,6 +30,6 @@
   }
 
   &__title {
-    cursor: default;
+    width: 150px;
   }
 }
