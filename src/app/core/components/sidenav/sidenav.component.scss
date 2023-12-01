@@ -7,13 +7,27 @@
   padding: 2rem 1rem;
   position: fixed;
 
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+  nav {
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+
+      li {
+        opacity: 1;
+        .link-icon {
+          width: 30px;
+        }
+      }
+
+      li:hover {
+        opacity: 0.5;
+        transition: all 0.25s ease;
+      }
+    }
   }
 }
 

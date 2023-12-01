@@ -1,1 +1,26 @@
-<div class="sidenav" [ngClass]="{'sidenav--open': isSidenavOpen}"></div>
+<aside class="sidenav">
+  <nav>
+    <ul>
+      <li>
+        <a routerLink="">
+          <img class="link-icon" src="assets/icons/home.png" alt="logo">
+        </a>
+      </li>
+      <li>
+        <a routerLink="game">
+          <img class="link-icon" src="assets/icons/gamepad.png" alt="logo">
+        </a>
+      </li>
+      <li>
+        <a routerLink="settings">
+          <img class="link-icon" src="assets/icons/settings.png" alt="logo">
+        </a>
+      </li>
+      <li>
+        <a routerLink="about">
+          <img class="link-icon" src="assets/icons/document.png" alt="logo">
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
