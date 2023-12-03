@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   height: var(--header-height);
-  background-color: var(--primary-color);
+  background-color: black;
   padding: 1em;
   box-sizing: border-box;
   align-items: center;
@@ -11,7 +11,7 @@
   box-shadow: 0 -6px 10px 5px rgba(0, 0, 0, 0.5);
   border-image: linear-gradient(to left,
       rgba(0, 0, 0, 1) 1%,
-      rgba(0, 255, 255, 1) 50%,
+      #8EABC9 50%,
       rgba(0, 0, 0, 1) 100%) 0 0 100% 0/0 0 3px 0 stretch;
 
   &__hamburger {
@@ -30,6 +30,6 @@
   }
 
   &__title {
-    width: 150px;
+    width: 200px;
   }
 }
