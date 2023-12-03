@@ -24,7 +24,7 @@
     overflow-y: auto;
 
     &__main {
-      padding: 2rem 4rem;
+      padding: 2rem;
       min-height: calc(100% - var(--header-height) - var(--footer-height));
     }
   }
