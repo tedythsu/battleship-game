@@ -45,8 +45,24 @@
 
       li {
         opacity: 1;
-        .link-icon {
-          width: 30px;
+        overflow: hidden;
+        white-space: nowrap;
+
+        a {
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+
+          .link-icon {
+            width: 30px;
+            margin-right: 2rem;
+          }
+
+          .link-text {
+            color: white;
+            font-family: 'Blanka';
+            letter-spacing: 0.3rem;
+          }
         }
       }
 
