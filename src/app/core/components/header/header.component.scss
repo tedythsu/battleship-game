@@ -1,35 +1,19 @@
 .header {
   display: flex;
-  justify-content: center;
-  height: var(--header-height);
-  background-color: black;
-  padding: 1em;
-  box-sizing: border-box;
   align-items: center;
-  gap: 0.5rem;
-  color: white;
-  box-shadow: 0 -6px 10px 5px rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  padding: 1em;
   border-image: linear-gradient(to left,
       rgba(0, 0, 0, 1) 1%,
       #8EABC9 50%,
       rgba(0, 0, 0, 1) 100%) 0 0 100% 0/0 0 3px 0 stretch;
 
-  &__hamburger {
-    width: 30px;
-    cursor: pointer;
-    opacity: 1;
-    transition: all ease 0.25s;
-  }
-
-  &__hamburger:hover {
-    opacity: 0.5;
-  }
-
-  &__logo {
-    width: 30px;
-  }
-
   &__title {
-    width: 200px;
+    font-family: 'Blanka';
+    letter-spacing: 0.5rem;
+    margin: 0;
+    position: relative;
+    bottom: 6px;
+    cursor: default;
   }
 }
