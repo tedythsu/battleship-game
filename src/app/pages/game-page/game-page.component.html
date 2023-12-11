@@ -1,1 +1,9 @@
-<p>game-page works!</p>
+<div class="board">
+  <div class="board__cell"
+    [ngClass]="{'board__cell--shipwreck': cell.hasBeenShot && cell.ship}"
+    [ngClass]="{'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship}"
+    [ngClass]="{'board__cell--ship': cell.ship}"
+    *ngFor="let cell of boardCells; index as i" (click)="shoot(i)">
+    {{ cell.location }}
+  </div>
+</div>
