@@ -1,9 +1,22 @@
-<div class="board">
+<div class="board"
+  [ngStyle]="{'width': 'calc(52 *' + boardDimension + 'px)', 'height': 'calc(52 *' + boardDimension + 'px)'}">
+
+  <div class="board__coordinates board__coordinates--top"
+    [ngStyle]="{'width': 'calc(52 *' + boardDimension + 'px)'}">
+    <div *ngFor="let item of [].constructor(boardDimension); index as i">
+      {{ i + 1 }}
+    </div>
+  </div>
+  <div class="board__coordinates board__coordinates--left"
+    [ngStyle]="{'height': 'calc(52 *' + boardDimension + 'px)'}">
+    <div *ngFor="let item of [].constructor(boardDimension); index as i">
+      {{ alphabetLetters[i] }}
+    </div>
+  </div>
+
   <div class="board__cell"
     [ngClass]="{'board__cell--shipwreck': cell.hasBeenShot && cell.ship}"
     [ngClass]="{'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship}"
-    [ngClass]="{'board__cell--ship': cell.ship}"
-    *ngFor="let cell of boardCells; index as i" (click)="shoot(i)">
-    {{ cell.location }}
+    [ngClass]="{'board__cell--ship': cell.ship}" *ngFor="let cell of boardCells; index as i" (click)="shoot(i)">
   </div>
 </div>

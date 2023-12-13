@@ -1,14 +1,32 @@
 .board {
-  margin: auto;
-  width: 450px;
+  position: relative;
+  margin: 1.5rem auto auto auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
+
+  &__coordinates {
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: none;
+  }
+
+  &__coordinates--top {
+    top: -26px;
+  }
+
+  &__coordinates--left {
+    left: -26px;
+    flex-direction: column;
+  }
 
   &__cell {
     width: 50px;
     height: 50px;
     border: 1px solid white;
+
     &:hover {
       background-color: white;
       cursor: pointer;
@@ -16,14 +34,16 @@
 
     &--has-been-shot {
       background-color: grey;
+      pointer-events: none;
     }
 
     &--shipwreck {
       background-color: red;
+      pointer-events: none;
     }
 
     &--ship {
-      background-color: goldenrod;
+      background-color: #000080;
     }
   }
 }
