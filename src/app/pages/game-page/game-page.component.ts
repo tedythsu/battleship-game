@@ -30,7 +30,7 @@ export class GamePageComponent implements OnInit {
 
   alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-  boardSize: number = 8;
+  boardDimension: number = 8;
   boardCells: Array<BoardCell> = [];
 
   ships: Array<Ship> = [
@@ -50,19 +50,24 @@ export class GamePageComponent implements OnInit {
   }
 
   private generateGameBoard(): void {
-    this.boardCells = Array.from({length: Math.pow(this.boardSize, 2)}, (_, index) => ({
-      location: this.getLocation(index + 1),
+    this.boardCells = Array.from({length: Math.pow(this.boardDimension, 2)}, (_, index) => ({
+      location: this.generateCellCoordinate(index + 1),
       hasBeenShot: false
     }));
   }
 
-  private getLocation(locationNumber: number): string {
-    let alphabetIndex = Math.trunc(locationNumber / this.boardSize);
-    if (locationNumber % this.boardSize === 0) {
-      alphabetIndex -= 1;
+  private generateCellCoordinate(cellIndex: number): string {
+    let columnIndex = cellIndex % this.boardDimension;
+    if (columnIndex === 0) {
+      columnIndex = this.boardDimension;
     }
 
-    return this.alphabetLetters[alphabetIndex] + locationNumber;
+    let rowIndex = Math.trunc(cellIndex / this.boardDimension);
+    if (cellIndex % this.boardDimension === 0) {
+      rowIndex -= 1;
+    }
+
+    return this.alphabetLetters[rowIndex] + columnIndex;
   }
 
   private generateShips(): void {
@@ -102,10 +107,10 @@ export class GamePageComponent implements OnInit {
         index = -1;
         break;
       case Direction.Up:
-        index = -this.boardSize;
+        index = -this.boardDimension;
         break;
       case Direction.Down:
-        index = this.boardSize;
+        index = this.boardDimension;
         break;
       default:
         throw new Error('Invalid direction');
@@ -137,13 +142,13 @@ export class GamePageComponent implements OnInit {
     for (let i = 0; i < size; i++) {
       switch (direction) {
         case Direction.Up:
-          shipIndexes.push(location - this.boardSize * i);
+          shipIndexes.push(location - this.boardDimension * i);
           break;
         case Direction.Right:
           shipIndexes.push(location + i);
           break;
         case Direction.Down:
-          shipIndexes.push(location + this.boardSize * i);
+          shipIndexes.push(location + this.boardDimension * i);
           break;
         case Direction.Left:
           shipIndexes.push(location - i);
@@ -167,8 +172,8 @@ export class GamePageComponent implements OnInit {
   /** Checks if ship placement in a specified direction results in a discontinuous placement. */
   private hasShipDiscontinuity(shipIndexes: number[], direction: string): boolean {
     if (direction === Direction.Right || direction === Direction.Left) {
-      const startRow = Math.trunc(shipIndexes[0] / this.boardSize);
-      const endRow = Math.trunc(shipIndexes[shipIndexes.length - 1] / this.boardSize)
+      const startRow = Math.trunc(shipIndexes[0] / this.boardDimension);
+      const endRow = Math.trunc(shipIndexes[shipIndexes.length - 1] / this.boardDimension)
       return startRow !== endRow;
     }
     return false;
