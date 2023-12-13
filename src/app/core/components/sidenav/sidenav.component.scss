@@ -6,6 +6,7 @@
   transition: 0.25s all cubic-bezier(.36, -0.01, 0, .77);
   padding: 2rem 1rem;
   position: fixed;
+  z-index: 2;
 
   border-image: linear-gradient(to bottom,
         rgba(0, 0, 0, 1) 1%,
