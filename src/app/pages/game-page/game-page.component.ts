@@ -50,6 +50,10 @@ export class GamePageComponent implements OnInit {
     {name: 'Battleship', size: 4},
   ]
 
+  get isMissileEnough(): boolean {
+    return this.missileCount > 0;
+  }
+
   get remainingShipsCount(): number {
     const remainingShips = [...new Set(
       this.boardCells
@@ -57,6 +61,10 @@ export class GamePageComponent implements OnInit {
         .map(item => item.ship)
     )];
     return remainingShips.length;
+  }
+
+  get isGameComplete(): boolean {
+    return this.remainingShipsCount === 0 || !this.isMissileEnough;
   }
 
   get currentTimestamp(): string {
@@ -229,17 +237,13 @@ export class GamePageComponent implements OnInit {
       this.generateMessage(ShotResult.MISSED);
     }
 
-    if (!this.isMissileEnough()) {
+    if (!this.isMissileEnough) {
       this.generateMessage('GAME OVER: OUT OF MISSILE');
     }
   }
 
   private generateMessage(content: string): void {
     this.message += `\n${this.currentTimestamp}: ${content}\n`;
-  }
-
-  private isMissileEnough(): boolean {
-    return this.missileCount > 0;
   }
 
   private checkForSunkShip(shipName: string): void {
