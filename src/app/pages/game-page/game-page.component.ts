@@ -21,7 +21,7 @@ enum Direction {
 }
 
 enum ShotResult {
-  HIT = 'HIT!',
+  HIT = 'TARGET HIT!',
   MISSED = 'MISSED!'
 }
 
@@ -70,10 +70,13 @@ export class GamePageComponent implements OnInit {
 
   public startGame(): void {
     this.generateGameBoard();
-    this.generateShips()
+    this.generateShips();
+    this.initializeGameData();
+    this.generateMessage("GAME STARTED");
   }
 
   private generateGameBoard(): void {
+    this.generateMessage('GENERATE GAME BOARD...');
     this.boardCells = Array.from({length: Math.pow(this.boardDimension, 2)}, (_, index) => ({
       location: this.generateCellCoordinate(index + 1),
       hasBeenShot: false
@@ -95,6 +98,7 @@ export class GamePageComponent implements OnInit {
   }
 
   private generateShips(): void {
+    this.generateMessage('GENERATE SHIPS...');
     let randomLocation: number;
     let randomDirection: string;
 
@@ -203,26 +207,30 @@ export class GamePageComponent implements OnInit {
     return false;
   }
 
+  private initializeGameData(): void {
+    this.generateMessage('INITIALIZE GAME DATA...');
+    this.missileCount = 30;
+  }
+
   public shoot(i: number): void {
-    if (!this.isMissileEnough()) {
-      this.generateMessage('OUT OF MISSILE');
-      return;
-    } else {
-      this.missileCount--;
-    }
-
     const target = this.boardCells[i];
+    this.generateMessage(`SHOT AT COORDINATE [${target.location}]`);
+    this.missileCount--;
+    target.hasBeenShot = true;
 
-    if (target.ship && !target.hasBeenShot) {
+    if (target.ship) {
       this.generateMessage(ShotResult.HIT);
-      target.hasBeenShot = true;
       this.checkForSunkShip(target.ship);
       if (this.remainingShipsCount === 0) {
-        this.generateMessage('WIN!');
+        this.generateMessage('VICTORY!');
+        return;
       }
     } else {
       this.generateMessage(ShotResult.MISSED);
-      target.hasBeenShot = true;
+    }
+
+    if (!this.isMissileEnough()) {
+      this.generateMessage('GAME OVER: OUT OF MISSILE');
     }
   }
 
@@ -240,5 +248,4 @@ export class GamePageComponent implements OnInit {
       this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
     }
   }
-
 }
