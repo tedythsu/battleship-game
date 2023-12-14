@@ -1,3 +1,7 @@
+<div class="start-button-container" [ngStyle]="{ 'width': boardDimensionPx }">
+  <button (click)="startGame()" class="start-button-container__button" role="button">START GAME</button>
+</div>
+
 <div class="board"
   [ngStyle]="{'width': 'calc(52 *' + boardDimension + 'px)', 'height': 'calc(52 *' + boardDimension + 'px)'}">
 
