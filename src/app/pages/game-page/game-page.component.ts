@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 interface BoardCell {
   location: string;
@@ -19,25 +20,48 @@ enum Direction {
   Down = 'Down',
 }
 
+enum ShotResult {
+  HIT = 'HIT!',
+  MISSED = 'MISSED!'
+}
+
 @Component({
   selector: 'app-game-page',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './game-page.component.html',
-  styleUrl: './game-page.component.scss'
+  styleUrl: './game-page.component.scss',
+  providers: [DatePipe],
 })
 export class GamePageComponent implements OnInit {
 
-  alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  constructor(private datePipe: DatePipe) {}
 
+  alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   boardDimension: number = 8;
+  boardDimensionPx: string = 'calc(52 * ' + this.boardDimension + 'px)';
   boardCells: Array<BoardCell> = [];
+  missileCount: number = 30;
+  message: string = '';
 
   ships: Array<Ship> = [
     {name: 'Destroyer', size: 2},
     {name: 'Cruiser', size: 3},
     {name: 'Battleship', size: 4},
   ]
+
+  get remainingShipsCount(): number {
+    const remainingShips = [...new Set(
+      this.boardCells
+        .filter(cell => !cell.hasBeenShot && cell.ship)
+        .map(item => item.ship)
+    )];
+    return remainingShips.length;
+  }
+
+  get currentTimestamp(): string {
+    return `[${this.datePipe.transform(new Date(), 'HH:mm:ss')}]`
+  }
 
   ngOnInit(): void {
     this.startGame();
@@ -180,8 +204,41 @@ export class GamePageComponent implements OnInit {
   }
 
   public shoot(i: number): void {
-    console.log(this.boardCells[i]);
-    this.boardCells[i].hasBeenShot = true;
+    if (!this.isMissileEnough()) {
+      this.generateMessage('OUT OF MISSILE');
+      return;
+    } else {
+      this.missileCount--;
+    }
+
+    const target = this.boardCells[i];
+
+    if (target.ship && !target.hasBeenShot) {
+      this.generateMessage(ShotResult.HIT);
+      target.hasBeenShot = true;
+      this.checkForSunkShip(target.ship);
+      if (this.remainingShipsCount === 0) {
+        this.generateMessage('WIN!');
+      }
+    } else {
+      this.generateMessage(ShotResult.MISSED);
+      target.hasBeenShot = true;
+    }
+  }
+
+  private generateMessage(content: string): void {
+    this.message += `\n${this.currentTimestamp}: ${content}\n`;
+  }
+
+  private isMissileEnough(): boolean {
+    return this.missileCount > 0;
+  }
+
+  private checkForSunkShip(shipName: string): void {
+    const unhitPartsCount = this.boardCells.filter(cell => cell.ship === shipName && !cell.hasBeenShot).length;
+    if (unhitPartsCount === 0) {
+      this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
+    }
   }
 
 }
