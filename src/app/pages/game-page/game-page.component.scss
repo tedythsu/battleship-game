@@ -65,6 +65,8 @@
     flex-wrap: wrap;
     justify-content: center;
     border: 2px solid white;
+    opacity: 1;
+    transition: all 0.25s ease;
 
     &__coordinates {
       position: absolute;
@@ -100,12 +102,15 @@
       &--shipwreck {
         background-color: red;
         pointer-events: none;
+        animation: shake 0.25s;
       }
     }
   }
 
   .board--disable {
     pointer-events: none;
+    opacity: 0.5;
+    transition: all 0.25s ease;
   }
 
   .game-info {
@@ -133,4 +138,18 @@
       min-height: 100px;
     }
   }
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
