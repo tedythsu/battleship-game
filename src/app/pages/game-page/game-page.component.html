@@ -4,30 +4,23 @@
 
 <div class="main">
 
-  <div class="board"
-    [ngStyle]="{'width': boardDimensionPx, 'height': boardDimensionPx}"
-    [ngClass]="{
-      'board--disable': remainingShipsCount === 0 || missileCount === 0
-    }">
-    <div class="board__coordinates board__coordinates--numbers"
-      [ngStyle]="{'width': boardDimensionPx}">
+  <div class="board" [ngStyle]="{ 'width': boardDimensionPx, 'height': boardDimensionPx }"
+    [ngClass]="{ 'board--disable': remainingShipsCount === 0 || missileCount === 0 }">
+    <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardDimensionPx }">
       <div *ngFor="let item of [].constructor(boardDimension); index as i">
         {{ i + 1 }}
       </div>
     </div>
-    <div class="board__coordinates board__coordinates--letters"
-      [ngStyle]="{'height': boardDimensionPx}">
+    <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardDimensionPx }">
       <div *ngFor="let item of [].constructor(boardDimension); index as i">
         {{ alphabetLetters[i] }}
       </div>
     </div>
-    <div class="board__cell"
-      [ngClass]="{
+    <div class="board__cell" [ngClass]="{
         'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
         'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
         'board__cell--ship': cell.ship
-      }"
-      *ngFor="let cell of boardCells; index as i" (click)="shoot(i)">
+      }" *ngFor="let cell of boardCells; index as i" (click)="shoot(i)">
     </div>
   </div>
 
