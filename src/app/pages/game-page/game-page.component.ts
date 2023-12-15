@@ -39,7 +39,7 @@ export class GamePageComponent implements OnInit {
     // Check for game status
     effect(() => {
       if (this.remainingShipsCount() === 0) {
-        this.generateMessage('VICTORY!');
+        this.generateMessage('VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!');
       } else if (!this.isMissileEnough()) {
         this.generateMessage('GAME OVER: OUT OF MISSILE');
       }
@@ -75,7 +75,7 @@ export class GamePageComponent implements OnInit {
     this.generateGameBoard();
     this.generateShips();
     this.initializeGameData();
-    this.generateMessage("GAME STARTED");
+    this.generateMessage("---GAME STARTED---");
   }
 
   private generateGameBoard(): void {
@@ -220,13 +220,12 @@ export class GamePageComponent implements OnInit {
     this.missileCount.update(count => count - 1);
     const target = this.boardCells[i];
     target.hasBeenShot = true;
-    this.generateMessage(`SHOT AT COORDINATE [${target.location}]`);
 
     if (target.ship) {
-      this.generateMessage(ShotResult.HIT);
+      this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.HIT}`);
       this.checkIfShipSunk(target.ship);
     } else {
-      this.generateMessage(ShotResult.MISSED);
+      this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.MISSED}`);
     }
   }
 
