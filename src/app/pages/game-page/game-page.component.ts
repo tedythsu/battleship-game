@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Signal, WritableSignal, computed, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
 
@@ -35,14 +35,16 @@ enum ShotResult {
 })
 export class GamePageComponent implements OnInit {
 
-  constructor(private datePipe: DatePipe) {}
-
-  alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  boardDimension: number = 8;
-  boardDimensionPx: string = 'calc(52 * ' + this.boardDimension + 'px)';
-  boardCells: Array<BoardCell> = [];
-  missileCount: number = 30;
-  message: string = '';
+  constructor(private datePipe: DatePipe) {
+    // Check for game status
+    effect(() => {
+      if (this.remainingShipsCount() === 0) {
+        this.generateMessage('VICTORY!');
+      } else if (!this.isMissileEnough()) {
+        this.generateMessage('GAME OVER: OUT OF MISSILE');
+      }
+    });
+  }
 
   ships: Array<Ship> = [
     {name: 'Destroyer', size: 2},
@@ -50,22 +52,15 @@ export class GamePageComponent implements OnInit {
     {name: 'Battleship', size: 4},
   ]
 
-  get isMissileEnough(): boolean {
-    return this.missileCount > 0;
-  }
-
-  get remainingShipsCount(): number {
-    const remainingShips = [...new Set(
-      this.boardCells
-        .filter(cell => !cell.hasBeenShot && cell.ship)
-        .map(item => item.ship)
-    )];
-    return remainingShips.length;
-  }
-
-  get isGameComplete(): boolean {
-    return this.remainingShipsCount === 0 || !this.isMissileEnough;
-  }
+  alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  boardCells: Array<BoardCell> = [];
+  boardDimension: WritableSignal<number> = signal(8);
+  boardDimensionPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardDimension() + 'px)');
+  isGameComplete: Signal<boolean> = computed(() => this.remainingShipsCount() === 0 || !this.isMissileEnough());
+  isMissileEnough: Signal<boolean> = computed(() => this.missileCount() > 0);
+  message: string = '';
+  missileCount: WritableSignal<number> = signal(30);
+  remainingShipsCount: WritableSignal<number> = signal(this.ships.length);
 
   get currentTimestamp(): string {
     return `[${this.datePipe.transform(new Date(), 'HH:mm:ss')}]`
@@ -85,20 +80,20 @@ export class GamePageComponent implements OnInit {
 
   private generateGameBoard(): void {
     this.generateMessage('GENERATE GAME BOARD...');
-    this.boardCells = Array.from({length: Math.pow(this.boardDimension, 2)}, (_, index) => ({
+    this.boardCells = Array.from({length: Math.pow(this.boardDimension(), 2)}, (_, index) => ({
       location: this.generateCellCoordinate(index + 1),
       hasBeenShot: false
     }));
   }
 
   private generateCellCoordinate(cellIndex: number): string {
-    let columnIndex = cellIndex % this.boardDimension;
+    let columnIndex = cellIndex % this.boardDimension();
     if (columnIndex === 0) {
-      columnIndex = this.boardDimension;
+      columnIndex = this.boardDimension();
     }
 
-    let rowIndex = Math.trunc(cellIndex / this.boardDimension);
-    if (cellIndex % this.boardDimension === 0) {
+    let rowIndex = Math.trunc(cellIndex / this.boardDimension());
+    if (cellIndex % this.boardDimension() === 0) {
       rowIndex -= 1;
     }
 
@@ -143,10 +138,10 @@ export class GamePageComponent implements OnInit {
         index = -1;
         break;
       case Direction.Up:
-        index = -this.boardDimension;
+        index = -this.boardDimension();
         break;
       case Direction.Down:
-        index = this.boardDimension;
+        index = this.boardDimension();
         break;
       default:
         throw new Error('Invalid direction');
@@ -178,13 +173,13 @@ export class GamePageComponent implements OnInit {
     for (let i = 0; i < size; i++) {
       switch (direction) {
         case Direction.Up:
-          shipIndexes.push(location - this.boardDimension * i);
+          shipIndexes.push(location - this.boardDimension() * i);
           break;
         case Direction.Right:
           shipIndexes.push(location + i);
           break;
         case Direction.Down:
-          shipIndexes.push(location + this.boardDimension * i);
+          shipIndexes.push(location + this.boardDimension() * i);
           break;
         case Direction.Left:
           shipIndexes.push(location - i);
@@ -208,8 +203,8 @@ export class GamePageComponent implements OnInit {
   /** Checks if ship placement in a specified direction results in a discontinuous placement. */
   private hasShipDiscontinuity(shipIndexes: number[], direction: string): boolean {
     if (direction === Direction.Right || direction === Direction.Left) {
-      const startRow = Math.trunc(shipIndexes[0] / this.boardDimension);
-      const endRow = Math.trunc(shipIndexes[shipIndexes.length - 1] / this.boardDimension)
+      const startRow = Math.trunc(shipIndexes[0] / this.boardDimension());
+      const endRow = Math.trunc(shipIndexes[shipIndexes.length - 1] / this.boardDimension())
       return startRow !== endRow;
     }
     return false;
@@ -217,28 +212,21 @@ export class GamePageComponent implements OnInit {
 
   private initializeGameData(): void {
     this.generateMessage('INITIALIZE GAME DATA...');
-    this.missileCount = 30;
+    this.remainingShipsCount.set(this.ships.length);
+    this.missileCount.set(30);
   }
 
   public shoot(i: number): void {
+    this.missileCount.update(count => count - 1);
     const target = this.boardCells[i];
-    this.generateMessage(`SHOT AT COORDINATE [${target.location}]`);
-    this.missileCount--;
     target.hasBeenShot = true;
+    this.generateMessage(`SHOT AT COORDINATE [${target.location}]`);
 
     if (target.ship) {
       this.generateMessage(ShotResult.HIT);
-      this.checkForSunkShip(target.ship);
-      if (this.remainingShipsCount === 0) {
-        this.generateMessage('VICTORY!');
-        return;
-      }
+      this.checkIfShipSunk(target.ship);
     } else {
       this.generateMessage(ShotResult.MISSED);
-    }
-
-    if (!this.isMissileEnough) {
-      this.generateMessage('GAME OVER: OUT OF MISSILE');
     }
   }
 
@@ -246,9 +234,10 @@ export class GamePageComponent implements OnInit {
     this.message += `\n${this.currentTimestamp}: ${content}\n`;
   }
 
-  private checkForSunkShip(shipName: string): void {
-    const unhitPartsCount = this.boardCells.filter(cell => cell.ship === shipName && !cell.hasBeenShot).length;
-    if (unhitPartsCount === 0) {
+  private checkIfShipSunk(shipName: string): void {
+    const isShipSunk = this.boardCells.find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
+    if (isShipSunk) {
+      this.remainingShipsCount.update(count => count - 1);
       this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
     }
   }

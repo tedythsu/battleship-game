@@ -1,18 +1,18 @@
-<div class="start-button-container" [ngStyle]="{ 'width': boardDimensionPx }">
+<div class="start-button-container" [ngStyle]="{ 'width': boardDimensionPx() }">
   <button (click)="startGame()" class="start-button-container__button" role="button">START GAME</button>
 </div>
 
 <div class="main">
 
-  <div class="board" [ngStyle]="{ 'width': boardDimensionPx, 'height': boardDimensionPx }"
-    [ngClass]="{ 'board--disable': isGameComplete }">
-    <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardDimensionPx }">
-      <div *ngFor="let item of [].constructor(boardDimension); index as i">
+  <div class="board" [ngStyle]="{ 'width': boardDimensionPx(), 'height': boardDimensionPx() }"
+    [ngClass]="{ 'board--disable': isGameComplete() }">
+    <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardDimensionPx() }">
+      <div *ngFor="let item of [].constructor(boardDimension()); index as i">
         {{ i + 1 }}
       </div>
     </div>
-    <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardDimensionPx }">
-      <div *ngFor="let item of [].constructor(boardDimension); index as i">
+    <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardDimensionPx() }">
+      <div *ngFor="let item of [].constructor(boardDimension()); index as i">
         {{ alphabetLetters[i] }}
       </div>
     </div>
@@ -25,8 +25,8 @@
   </div>
 
   <div class="game-info">
-    <div class="game-info__missile-count">MISSILE COUNT: {{ missileCount }}</div>
-    <div class="game-info__remaining-ships">THE NUMBER OF SHIPS LEFT: {{ remainingShipsCount }}</div>
+    <div class="game-info__missile-count">MISSILE COUNT: {{ missileCount() }}</div>
+    <div class="game-info__remaining-ships">THE NUMBER OF SHIPS LEFT: {{ remainingShipsCount() }}</div>
     <div class="game-info__message">{{ message }}</div>
   </div>
 
