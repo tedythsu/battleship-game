@@ -2,7 +2,7 @@
 
 body {
   margin: 0;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: monospace;
   overflow: hidden;
   background-color: black;
   color: white;
@@ -21,4 +21,19 @@ body {
   src: url('assets/fonts/BLANKA/Blanka-Regular.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border: 1px solid #555555;
 }
