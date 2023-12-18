@@ -4,7 +4,7 @@
 
 ### BGE
 
--   [ ] Caller can invoke a `startGame()` function to begin a 1-player game. This function will generate an 8x8 game board consisting of 3 ships having a width of one square and a length of:
+-   [x] Caller can invoke a `startGame()` function to begin a 1-player game. This function will generate an 8x8 game board consisting of 3 ships having a width of one square and a length of:
 
     -   Destroyer: 2 squares
     -   Cruiser: 3 squares
@@ -12,18 +12,18 @@
 
     `startGame()` will randomly place these ships on the board in any direction and will return an array representing ship placement.
 
--   [ ] Caller can invoke a `shoot()` function passing the target row and column coordinates of the targeted cell on the game board. `shoot()` will return indicators representing if the shot resulted in a hit or miss, the number of ships left (i.e. not yet sunk), the ship placement array, and an updated hits and misses array.
+-   [x] Caller can invoke a `shoot()` function passing the target row and column coordinates of the targeted cell on the game board. `shoot()` will return indicators representing if the shot resulted in a hit or miss, the number of ships left (i.e. not yet sunk), the ship placement array, and an updated hits and misses array.
 
     Cells in the hits and misses array will contain a space if they have yet to be targeted, `O` if they were targeted but no part of a ship was at that location, or `X` if the cell was occupied by part of a ship.
 
 ### Text-based Presentation Layer
 
--   [ ] User can see the hits and misses array displayed as a 2 dimensional character representation of the game board returned by the `startGame()` function.
--   [ ] User can be prompted to enter the coordinates of a target square on the game board.
--   [ ] User can see an updated hits and misses array display after taking a shot.
--   [ ] User can see a message after each shot indicating whether the shot resulted in a hit or miss.
--   [ ] User can see an congratulations message after the shot that sinks the last remaining ship.
--   [ ] User can be prompted to play again at the end of each game. Declining to play again stops the game.
+-   [x] User can see the hits and misses array displayed as a 2 dimensional character representation of the game board returned by the `startGame()` function.
+-   [x] User can be prompted to enter the coordinates of a target square on the game board.
+-   [x] User can see an updated hits and misses array display after taking a shot.
+-   [x] User can see a message after each shot indicating whether the shot resulted in a hit or miss.
+-   [x] User can see an congratulations message after the shot that sinks the last remaining ship.
+-   [x] User can be prompted to play again at the end of each game. Declining to play again stops the game.
 
 ## Bonus features
 
