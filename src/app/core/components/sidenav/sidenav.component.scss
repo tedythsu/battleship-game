@@ -7,7 +7,11 @@
   padding: 2rem 1rem;
   position: fixed;
   z-index: 2;
-  border-image: var(--sidenav-border-image);
+
+  border-image: linear-gradient(to bottom,
+  var(--bg-color) 1%,
+  #8EABC9 5%,
+  var(--bg-color) 100%) 0 100% 0 0/0 1px 0 0 stretch;
 
   .mask {
     width: 100vw;
