@@ -1,18 +1,18 @@
-<div class="start-button-container" [ngStyle]="{ 'width': boardDimensionPx() }">
+<div class="start-button-container">
   <button (click)="startGame()" class="start-button-container__button" role="button">START GAME</button>
 </div>
 
 <div class="main">
 
-  <div class="board" [ngStyle]="{ 'width': boardDimensionPx(), 'height': boardDimensionPx() }"
+  <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
     [ngClass]="{ 'board--disable': isGameComplete() }">
-    <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardDimensionPx() }">
-      <div *ngFor="let item of [].constructor(boardDimension()); index as i">
+    <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
+      <div *ngFor="let item of [].constructor(boardColumns()); index as i">
         {{ i + 1 }}
       </div>
     </div>
-    <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardDimensionPx() }">
-      <div *ngFor="let item of [].constructor(boardDimension()); index as i">
+    <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardRowsPx() }">
+      <div *ngFor="let item of [].constructor(boardRows()); index as i">
         {{ alphabetLetters[i] }}
       </div>
     </div>

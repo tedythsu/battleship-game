@@ -53,9 +53,15 @@ export class GamePageComponent implements OnInit {
   ]
 
   alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+  // Board Information
   boardCells: Array<BoardCell> = [];
-  boardDimension: WritableSignal<number> = signal(8);
-  boardDimensionPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardDimension() + 'px)');
+  boardRows: WritableSignal<number> = signal(8);
+  boardColumns: WritableSignal<number> = signal(8);
+  boardTotalCells: Signal<number> = computed(() => this.boardRows() * this.boardColumns());
+  boardRowsPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardRows() + 'px)');
+  boardColumnsPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardColumns() + 'px)');
+
   isGameComplete: Signal<boolean> = computed(() => this.remainingShipsCount() === 0 || !this.isMissileEnough());
   isMissileEnough: Signal<boolean> = computed(() => this.missileCount() > 0);
   message: string = '';
@@ -80,20 +86,20 @@ export class GamePageComponent implements OnInit {
 
   private generateGameBoard(): void {
     this.generateMessage('GENERATE GAME BOARD...');
-    this.boardCells = Array.from({length: Math.pow(this.boardDimension(), 2)}, (_, index) => ({
+    this.boardCells = Array.from({length: this.boardTotalCells()}, (_, index) => ({
       location: this.generateCellCoordinate(index + 1),
       hasBeenShot: false
     }));
   }
 
   private generateCellCoordinate(cellIndex: number): string {
-    let columnIndex = cellIndex % this.boardDimension();
+    let columnIndex = cellIndex % this.boardColumns();
     if (columnIndex === 0) {
-      columnIndex = this.boardDimension();
+      columnIndex = this.boardColumns();
     }
 
-    let rowIndex = Math.trunc(cellIndex / this.boardDimension());
-    if (cellIndex % this.boardDimension() === 0) {
+    let rowIndex = Math.trunc(cellIndex / this.boardRows());
+    if (cellIndex % this.boardRows() === 0) {
       rowIndex -= 1;
     }
 
@@ -138,10 +144,10 @@ export class GamePageComponent implements OnInit {
         index = -1;
         break;
       case Direction.Up:
-        index = -this.boardDimension();
+        index = -this.boardRows();
         break;
       case Direction.Down:
-        index = this.boardDimension();
+        index = this.boardRows();
         break;
       default:
         throw new Error('Invalid direction');
@@ -153,7 +159,7 @@ export class GamePageComponent implements OnInit {
   }
 
   private getRandomLocation(): number {
-    return Math.floor(Math.random() * this.boardCells.length);
+    return Math.floor(Math.random() * this.boardTotalCells());
   }
 
   private getRandomDirection(): string {
@@ -173,13 +179,13 @@ export class GamePageComponent implements OnInit {
     for (let i = 0; i < size; i++) {
       switch (direction) {
         case Direction.Up:
-          shipIndexes.push(location - this.boardDimension() * i);
+          shipIndexes.push(location - this.boardRows() * i);
           break;
         case Direction.Right:
           shipIndexes.push(location + i);
           break;
         case Direction.Down:
-          shipIndexes.push(location + this.boardDimension() * i);
+          shipIndexes.push(location + this.boardRows() * i);
           break;
         case Direction.Left:
           shipIndexes.push(location - i);
@@ -192,7 +198,7 @@ export class GamePageComponent implements OnInit {
 
   /** Checks if any of the ship indexes are out of bounds on the game board. */
   private isShipOutOfBounds(shipIndexes: number[]): boolean {
-    return shipIndexes.find(index => index >= this.boardCells.length || index < 0) !== undefined;
+    return shipIndexes.find(index => index >= this.boardTotalCells() || index < 0) !== undefined;
   }
 
   /** Checks if there is any ship overlap at the specified indexes on the game board. */
@@ -203,8 +209,8 @@ export class GamePageComponent implements OnInit {
   /** Checks if ship placement in a specified direction results in a discontinuous placement. */
   private hasShipDiscontinuity(shipIndexes: number[], direction: string): boolean {
     if (direction === Direction.Right || direction === Direction.Left) {
-      const startRow = Math.trunc(shipIndexes[0] / this.boardDimension());
-      const endRow = Math.trunc(shipIndexes[shipIndexes.length - 1] / this.boardDimension())
+      const startRow = Math.trunc(shipIndexes[0] / this.boardRows());
+      const endRow = Math.trunc(shipIndexes[shipIndexes.length - 1] / this.boardRows())
       return startRow !== endRow;
     }
     return false;
