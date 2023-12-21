@@ -1,6 +1,9 @@
 .page-container {
   display: flex;
   flex-direction: row;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: all ease 0.25s;
 
   .content-container {
     height: calc(100vh - var(--header-height));

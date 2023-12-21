@@ -1,19 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, signal, effect, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidenavService } from '../../services/sidenav.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
 
-  constructor(private sidenav: SidenavService) { }
+  darkMode: WritableSignal<boolean> = signal(true);
 
-  public toggleSidenav() {
+  constructor(private sidenav: SidenavService) {
+    effect(() => {
+      this.darkMode() ? document.body.classList.remove('light-mode') : document.body.classList.add('light-mode');
+    });
+  }
+
+  public toggleSidenav(): void {
     this.sidenav.toggle();
   }
+
+  public toggleDarkMode(): void {
+    this.darkMode.set(!this.darkMode());
+  }
+
 }

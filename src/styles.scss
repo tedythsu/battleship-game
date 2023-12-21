@@ -4,8 +4,23 @@ body {
   margin: 0;
   font-family: monospace;
   overflow: hidden;
-  background-color: black;
-  color: white;
+  --bg-color: #000000;
+  --text-color: #FFFFFF;
+
+  --header-border-image: linear-gradient(to left,
+  var(--bg-color) 1%,
+  #8EABC9 50%,
+  var(--bg-color) 100%) 0 0 100% 0/0 0 3px 0 stretch;
+
+  --sidenav-border-image: linear-gradient(to bottom,
+  var(--bg-color) 1%,
+  #8EABC9 5%,
+  var(--bg-color) 100%) 0 100% 0 0/0 1px 0 0 stretch;
+}
+
+.light-mode {
+  --bg-color: #FFFFFF;
+  --text-color: #000000;
 }
 
 :root {

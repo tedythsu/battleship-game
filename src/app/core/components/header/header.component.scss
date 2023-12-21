@@ -4,10 +4,10 @@
   justify-content: center;
   padding: 1em;
   position: relative;
-  border-image: linear-gradient(to left,
-      rgba(0, 0, 0, 1) 1%,
-      #8EABC9 50%,
-      rgba(0, 0, 0, 1) 100%) 0 0 100% 0/0 0 3px 0 stretch;
+  border-image: var(--header-border-image);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: all 0.25s ease;
 
   &__title {
     font-family: 'Blanka';
