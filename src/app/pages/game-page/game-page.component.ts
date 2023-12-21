@@ -55,7 +55,8 @@ export class GamePageComponent implements OnInit {
   alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
   // Board Information
-  boardCells: Array<BoardCell> = [];
+  numberOfPlayers: number = 2;
+  boards: Array<Array<BoardCell>> = [[]];
   boardRows: WritableSignal<number> = signal(8);
   boardColumns: WritableSignal<number> = signal(8);
   boardTotalCells: Signal<number> = computed(() => this.boardRows() * this.boardColumns());
@@ -73,23 +74,32 @@ export class GamePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.startGame();
-    console.log(this.boardCells);
+    this.startGame(this.numberOfPlayers);
+    console.log('Boards Information', this.boards);
   }
 
-  public startGame(): void {
-    this.generateGameBoard();
-    this.generateShips();
+  public startGame(numberOfPlayers: number): void {
+    this.generateGameBoard(numberOfPlayers);
+
+    for (let i = 0; i < numberOfPlayers; i++) {
+      this.generateShips(i);
+    }
+
     this.initializeGameData();
     this.generateMessage("---GAME STARTED---");
   }
 
-  private generateGameBoard(): void {
+  private generateGameBoard(numberOfPlayers: number): void {
     this.generateMessage('GENERATE GAME BOARD...');
-    this.boardCells = Array.from({length: this.boardTotalCells()}, (_, index) => ({
-      location: this.generateCellCoordinate(index + 1),
-      hasBeenShot: false
-    }));
+
+    for (let i = 0; i < numberOfPlayers; i++) {
+      const boardCells = Array.from({length: this.boardTotalCells()}, (_, index) => ({
+        location: this.generateCellCoordinate(index + 1),
+        hasBeenShot: false
+      }));
+
+      this.boards[i] = [...boardCells];
+    }
   }
 
   private generateCellCoordinate(cellIndex: number): string {
@@ -106,7 +116,7 @@ export class GamePageComponent implements OnInit {
     return this.alphabetLetters[rowIndex] + columnIndex;
   }
 
-  private generateShips(): void {
+  private generateShips(boardIndex: number): void {
     this.generateMessage('GENERATE SHIPS...');
     let randomLocation: number;
     let randomDirection: string;
@@ -122,18 +132,18 @@ export class GamePageComponent implements OnInit {
         console.log('船名', ship.name)
         console.log('隨機位置', randomLocation);
         console.log('隨機方向', randomDirection);
-        isShipPlacementValid = this.isShipPlacementValid(randomLocation, randomDirection, ship.size);
+        isShipPlacementValid = this.isShipPlacementValid(boardIndex, randomLocation, randomDirection, ship.size);
         attempts++;
         if (attempts === maxAttempts) {
           break;
         }
       }
 
-      this.placeShipOnBoard(randomLocation, randomDirection, ship.name, ship.size);
+      this.placeShipOnBoard(randomLocation, randomDirection, ship.name, ship.size, boardIndex);
     })
   }
 
-  private placeShipOnBoard(location: number, direction: string, name: string, size: number): void {
+  private placeShipOnBoard(location: number, direction: string, name: string, size: number, boardIndex: number): void {
     let index: number;
 
     switch (direction) {
@@ -154,7 +164,7 @@ export class GamePageComponent implements OnInit {
     }
 
     for (let i = 0; i < size; i++) {
-      this.boardCells[location + i * index].ship = name;
+      this.boards[boardIndex][location + i * index].ship = name;
     }
   }
 
@@ -167,10 +177,10 @@ export class GamePageComponent implements OnInit {
     return directions[Math.floor(Math.random() * directions.length)];
   }
 
-  private isShipPlacementValid(location: number, direction: string, size: number): boolean {
+  private isShipPlacementValid(board: number, location: number, direction: string, size: number): boolean {
     const shipIndexes = this.generateShipIndexes(location, direction, size);
     console.log(shipIndexes);
-    return this.isShipOutOfBounds(shipIndexes) || this.hasShipOverlap(shipIndexes) || this.hasShipDiscontinuity(shipIndexes, direction) ? false : true;
+    return this.isShipOutOfBounds(shipIndexes) || this.hasShipOverlap(board, shipIndexes) || this.hasShipDiscontinuity(shipIndexes, direction) ? false : true;
   }
 
   private generateShipIndexes(location: number, direction: string, size: number): number[] {
@@ -202,8 +212,8 @@ export class GamePageComponent implements OnInit {
   }
 
   /** Checks if there is any ship overlap at the specified indexes on the game board. */
-  private hasShipOverlap(shipIndexes: number[]): boolean {
-    return shipIndexes.find(index => this.boardCells[index].ship) !== undefined;
+  private hasShipOverlap(board: number, shipIndexes: number[]): boolean {
+    return shipIndexes.find(index => this.boards[board][index].ship) !== undefined;
   }
 
   /** Checks if ship placement in a specified direction results in a discontinuous placement. */
@@ -222,14 +232,14 @@ export class GamePageComponent implements OnInit {
     this.missileCount.set(30);
   }
 
-  public shoot(i: number): void {
+  public shoot(boardIndex: number, cellIndex: number): void {
     this.missileCount.update(count => count - 1);
-    const target = this.boardCells[i];
+    const target = this.boards[boardIndex][cellIndex];
     target.hasBeenShot = true;
 
     if (target.ship) {
       this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.HIT}`);
-      this.checkIfShipSunk(target.ship);
+      this.checkIfShipSunk(boardIndex, target.ship);
     } else {
       this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.MISSED}`);
     }
@@ -239,8 +249,8 @@ export class GamePageComponent implements OnInit {
     this.message += `\n${this.currentTimestamp}: ${content}\n`;
   }
 
-  private checkIfShipSunk(shipName: string): void {
-    const isShipSunk = this.boardCells.find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
+  private checkIfShipSunk(boardIndex: number, shipName: string): void {
+    const isShipSunk = this.boards[boardIndex].find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
     if (isShipSunk) {
       this.remainingShipsCount.update(count => count - 1);
       this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);

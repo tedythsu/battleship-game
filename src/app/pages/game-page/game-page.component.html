@@ -1,10 +1,11 @@
 <div class="start-button-container">
-  <button (click)="startGame()" class="start-button-container__button" role="button">START GAME</button>
+  <button (click)="startGame(numberOfPlayers)" class="start-button-container__button" role="button">START GAME</button>
 </div>
 
 <div class="main">
 
-  <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
+  <ng-container *ngFor="let board of boards; index as boardIndex">
+    <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
     [ngClass]="{ 'board--disable': isGameComplete() }">
     <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
       <div *ngFor="let item of [].constructor(boardColumns()); index as i">
@@ -20,9 +21,10 @@
         'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
         'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
         'board__cell--ship': cell.ship
-      }" *ngFor="let cell of boardCells; index as i" (click)="shoot(i)">
+      }" *ngFor="let cell of board; index as cellIndex" (click)="shoot(boardIndex, cellIndex)">
     </div>
   </div>
+  </ng-container>
 
   <div class="game-info">
     <div class="game-info__missile-count">MISSILE COUNT: {{ missileCount() }}</div>
