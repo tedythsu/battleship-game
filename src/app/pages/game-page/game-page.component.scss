@@ -116,63 +116,82 @@
 .main {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 3rem;
   justify-content: center;
 
-  .board {
-    position: relative;
-    margin-left: 1.5rem;
+  .boards {
     display: flex;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-    justify-content: center;
-    border: 2px solid;
-    opacity: 1;
+    flex-wrap: nowrap;
+    gap: 3rem;
 
-    &__coordinates {
-      position: absolute;
+    .board {
+      position: relative;
+      margin-left: 1.5rem;
       display: flex;
-      justify-content: space-around;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      border: 2px solid;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+
+      &__player-label {
+        pointer-events: none;
+        position: absolute;
+        top: -52px;
+      }
+
+      &__ships-count {
+        pointer-events: none;
+        position: absolute;
+        bottom: -26px;
+      }
+
+      &__coordinates {
+        position: absolute;
+        display: flex;
+        justify-content: space-around;
+        pointer-events: none;
+      }
+
+      &__coordinates--numbers {
+        top: -26px;
+      }
+
+      &__coordinates--letters {
+        left: -26px;
+        flex-direction: column;
+      }
+
+      &__cell {
+        width: 50px;
+        height: 50px;
+        border: 1px solid;
+        background-size: 50px;
+        transition: background-color 0.5s ease;
+
+        &:hover {
+          background-color: red;
+          cursor: pointer;
+        }
+
+        &--has-been-shot {
+          background-image: url("/assets/icons/cross-modified.png");
+          pointer-events: none;
+        }
+
+        &--shipwreck {
+          background-image: url("/assets/icons/explode.png");
+          pointer-events: none;
+          animation: shake 0.25s;
+        }
+      }
+    }
+
+    .board--disable {
       pointer-events: none;
+      opacity: 0.5;
     }
-
-    &__coordinates--numbers {
-      top: -26px;
-    }
-
-    &__coordinates--letters {
-      left: -26px;
-      flex-direction: column;
-    }
-
-    &__cell {
-      width: 50px;
-      height: 50px;
-      border: 1px solid;
-      background-size: 50px;
-
-      &:hover {
-        background-image: url("/assets/icons/target-modified.png");
-        cursor: pointer;
-      }
-
-      &--has-been-shot {
-        background-image: url("/assets/icons/cross-modified.png");
-        pointer-events: none;
-      }
-
-      &--shipwreck {
-        background-image: url("/assets/icons/explode.png");
-        pointer-events: none;
-        animation: shake 0.25s;
-      }
-    }
-  }
-
-  .board--disable {
-    pointer-events: none;
-    opacity: 0.5;
-    transition: all 0.25s ease;
   }
 
   .game-info {

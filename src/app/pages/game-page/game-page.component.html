@@ -10,31 +10,35 @@
 
 <div class="main">
 
-  <ng-container *ngFor="let board of boards; index as boardIndex">
-    <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
-    [ngClass]="{ 'board--disable': isGameComplete() }">
-    <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
-      <div *ngFor="let item of [].constructor(boardColumns()); index as i">
-        {{ i + 1 }}
+  <div class="boards">
+    <ng-container *ngFor="let board of boards; index as boardIndex">
+      <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
+        [ngClass]="{ 'board--disable': isGameComplete() }">
+        <div class="board__player-label">PLAYER {{ boardIndex + 1 }}
+          <span *ngIf="numberOfPlayers === 1"> (MISSILE COUNT: {{ missileCount() }})</span>
+        </div>
+        <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
+          <div *ngFor="let item of [].constructor(boardColumns()); index as i">
+            {{ i + 1 }}
+          </div>
+        </div>
+        <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardRowsPx() }">
+          <div *ngFor="let item of [].constructor(boardRows()); index as i">
+            {{ alphabetLetters[i] }}
+          </div>
+        </div>
+        <div class="board__cell" [ngClass]="{
+            'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
+            'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
+            'board__cell--ship': cell.ship
+          }" *ngFor="let cell of board; index as cellIndex" (click)="shoot(boardIndex, cellIndex)">
+        </div>
+        <div class="board__ships-count">THE NUMBER OF SHIPS LEFT: {{ remainingShipsCount() }}</div>
       </div>
-    </div>
-    <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardRowsPx() }">
-      <div *ngFor="let item of [].constructor(boardRows()); index as i">
-        {{ alphabetLetters[i] }}
-      </div>
-    </div>
-    <div class="board__cell" [ngClass]="{
-        'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
-        'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
-        'board__cell--ship': cell.ship
-      }" *ngFor="let cell of board; index as cellIndex" (click)="shoot(boardIndex, cellIndex)">
-    </div>
+    </ng-container>
   </div>
-  </ng-container>
 
-  <div class="game-info">
-    <div class="game-info__missile-count">MISSILE COUNT: {{ missileCount() }}</div>
-    <div class="game-info__remaining-ships">THE NUMBER OF SHIPS LEFT: {{ remainingShipsCount() }}</div>
+  <div class="game-info" [ngStyle]="{ 'min-width': boardColumnsPx() }">
     <div class="game-info__message">{{ message }}</div>
   </div>
 
