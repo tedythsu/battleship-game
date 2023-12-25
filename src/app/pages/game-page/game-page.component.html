@@ -9,37 +9,39 @@
 </div>
 
 <div class="main">
-
   <div class="boards">
-    <ng-container *ngFor="let board of boards; index as boardIndex">
+    @for (board of boards; track board; let boardIndex = $index) {
       <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
         [ngClass]="{ 'board--disable': isGameComplete() }">
         <div class="board__player-label">PLAYER {{ boardIndex + 1 }}
-          <span *ngIf="numberOfPlayers === 1"> (MISSILE COUNT: {{ missileCount() }})</span>
+          @if (numberOfPlayers === 1) {
+            <span> (MISSILE COUNT: {{ missileCount() }})</span>
+          }
         </div>
         <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
-          <div *ngFor="let item of [].constructor(boardColumns()); index as i">
-            {{ i + 1 }}
-          </div>
+          @for (column of [].constructor(boardColumns()); track $index) {
+            <div>{{ $index + 1 }}</div>
+          }
         </div>
         <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardRowsPx() }">
-          <div *ngFor="let item of [].constructor(boardRows()); index as i">
-            {{ alphabetLetters[i] }}
-          </div>
+          @for (row of [].constructor(boardRows()); track $index) {
+            <div>{{ alphabetLetters[$index] }}</div>
+          }
         </div>
-        <div class="board__cell" [ngClass]="{
+        @for (cell of board; track cell; let cellIndex = $index) {
+          <div class="board__cell"
+            [ngClass]="{
             'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
             'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
             'board__cell--ship': cell.ship
-          }" *ngFor="let cell of board; index as cellIndex" (click)="shoot(boardIndex, cellIndex)">
-        </div>
+            }" (click)="shoot(boardIndex, cellIndex)">
+          </div>
+        }
         <div class="board__ships-count">THE NUMBER OF SHIPS LEFT: {{ remainingShipsCount() }}</div>
       </div>
-    </ng-container>
+    }
   </div>
-
   <div class="game-info" [ngStyle]="{ 'min-width': boardColumnsPx() }">
     <div class="game-info__message">{{ message }}</div>
   </div>
-
 </div>
