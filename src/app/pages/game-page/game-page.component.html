@@ -1,5 +1,5 @@
 <div class="start-button-container">
-  <button class="start-button-container__button" (click)="startGame(numberOfPlayers)">
+  <button class="start-button-container__button" (click)="startGame('Multi Player')">
     <span></span>
     <span></span>
     <span></span>
@@ -12,9 +12,9 @@
   <div class="boards">
     @for (board of boards; track board; let boardIndex = $index) {
       <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
-        [ngClass]="{ 'board--disable': isGameComplete() }">
-        <div class="board__player-label">PLAYER {{ boardIndex + 1 }}
-          @if (numberOfPlayers === 1) {
+        [ngClass]="{ 'board--disable': isGameComplete() || (gameMode === 'Multi Player' && currentPlayer === boardIndex) }">
+        <div class="board__player-label">{{ players[boardIndex].playerName }}
+          @if (gameMode === 'Single Player') {
             <span> (MISSILE COUNT: {{ missileCount() }})</span>
           }
         </div>

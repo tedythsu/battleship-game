@@ -13,6 +13,13 @@ interface Ship {
   size: number;
 }
 
+interface PlayerInfo {
+  playerName: string;
+  // TODO:
+  // isTurn: boolean;
+  // remainingShips: WritableSignal<number>;
+}
+
 enum Direction {
   Right = 'Right',
   Left = 'Left',
@@ -23,6 +30,16 @@ enum Direction {
 enum ShotResult {
   HIT = 'TARGET HIT!',
   MISSED = 'MISSED!'
+}
+
+enum Player {
+  PLAYER_ONE = 0,
+  PLAYER_TWO = 1
+}
+
+enum GameMode {
+  SINGLE_PLAYER = 'Single Player',
+  MULTI_PLAYER = 'Multi Player'
 }
 
 @Component({
@@ -55,13 +72,16 @@ export class GamePageComponent implements OnInit {
   alphabetLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
   // Board Information
-  numberOfPlayers: number = 2;
-  boards: Array<Array<BoardCell>> = [[]];
+  boards: Array<Array<BoardCell>> = [];
   boardRows: WritableSignal<number> = signal(8);
   boardColumns: WritableSignal<number> = signal(8);
   boardTotalCells: Signal<number> = computed(() => this.boardRows() * this.boardColumns());
   boardRowsPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardRows() + 'px)');
   boardColumnsPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardColumns() + 'px)');
+
+  gameMode: GameMode = GameMode.MULTI_PLAYER;
+  players: Array<PlayerInfo> = []
+  currentPlayer = Player.PLAYER_ONE;
 
   isGameComplete: Signal<boolean> = computed(() => this.remainingShipsCount() === 0 || !this.isMissileEnough());
   isMissileEnough: Signal<boolean> = computed(() => this.missileCount() > 0);
@@ -74,32 +94,53 @@ export class GamePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.startGame(this.numberOfPlayers);
-    console.log('Boards Information', this.boards);
+    this.startGame(this.gameMode);
+    console.log('Player Information', this.players);
+    console.log('Board Information', this.boards);
   }
 
-  public startGame(numberOfPlayers: number): void {
-    this.generateGameBoard(numberOfPlayers);
+  public startGame(gameMode: string): void {
+    const numberOfPlayers = gameMode === GameMode.SINGLE_PLAYER ? 1 : 2;
+    this.players = this.generatePlayer(numberOfPlayers);
+    this.boards = this.generateGameBoard(numberOfPlayers);
+    this.generateShipsOnGameBoard(numberOfPlayers);
+    this.initializeGameData();
+    this.generateMessage('---GAME STARTED---');
+  }
 
-    for (let i = 0; i < numberOfPlayers; i++) {
-      this.generateShips(i);
+  /** Generates player information for each player in the game */
+  private generatePlayer(numberOfPlayers: number): Array<PlayerInfo> {
+    let players: Array<PlayerInfo> = [];
+
+    for (let i = 1; i <= numberOfPlayers; i++) {
+      const player: PlayerInfo = {
+        playerName: `PLAYER ${i}`,
+        // TODO:
+        // isTurn: this.gameMode === GameMode.SINGLE_PLAYER,
+        // remainingShips: signal(this.ships.length)
+      }
+
+      players.push(player);
     }
 
-    this.initializeGameData();
-    this.generateMessage("---GAME STARTED---");
+    return players;
   }
 
-  private generateGameBoard(numberOfPlayers: number): void {
+  /** Generates game boards for each player */
+  private generateGameBoard(numberOfPlayers: number): Array<Array<BoardCell>> {
     this.generateMessage('GENERATE GAME BOARD...');
+
+    let boards: Array<Array<BoardCell>> = [];
 
     for (let i = 0; i < numberOfPlayers; i++) {
       const boardCells = Array.from({length: this.boardTotalCells()}, (_, index) => ({
         location: this.generateCellCoordinate(index + 1),
         hasBeenShot: false
       }));
-
-      this.boards[i] = [...boardCells];
+      boards.push([...boardCells]);
     }
+
+    return boards;
   }
 
   private generateCellCoordinate(cellIndex: number): string {
@@ -116,31 +157,35 @@ export class GamePageComponent implements OnInit {
     return this.alphabetLetters[rowIndex] + columnIndex;
   }
 
-  private generateShips(boardIndex: number): void {
+  /** Generates and places ships on the game boards for each player */
+  private generateShipsOnGameBoard(boardCount: number): void {
     this.generateMessage('GENERATE SHIPS...');
-    let randomLocation: number;
-    let randomDirection: string;
 
-    this.ships.forEach((ship) => {
-      let isShipPlacementValid = false;
-      const maxAttempts = 100;
-      let attempts = 0;
+    for (let boardIndex = 0; boardIndex < boardCount; boardIndex++) {
+      let randomLocation: number;
+      let randomDirection: string;
 
-      while (!isShipPlacementValid) {
-        randomLocation = this.getRandomLocation();
-        randomDirection = this.getRandomDirection();
-        console.log('船名', ship.name)
-        console.log('隨機位置', randomLocation);
-        console.log('隨機方向', randomDirection);
-        isShipPlacementValid = this.isShipPlacementValid(boardIndex, randomLocation, randomDirection, ship.size);
-        attempts++;
-        if (attempts === maxAttempts) {
-          break;
+      this.ships.forEach((ship) => {
+        let isShipPlacementValid = false;
+        const maxAttempts = 100;
+        let attempts = 0;
+
+        while (!isShipPlacementValid) {
+          randomLocation = this.getRandomLocation();
+          randomDirection = this.getRandomDirection();
+          // console.log('船名', ship.name)
+          // console.log('隨機位置', randomLocation);
+          // console.log('隨機方向', randomDirection);
+          isShipPlacementValid = this.isShipPlacementValid(boardIndex, randomLocation, randomDirection, ship.size);
+          attempts++;
+          if (attempts === maxAttempts) {
+            break;
+          }
         }
-      }
 
-      this.placeShipOnBoard(randomLocation, randomDirection, ship.name, ship.size, boardIndex);
-    })
+        this.placeShipOnBoard(randomLocation, randomDirection, ship.name, ship.size, boardIndex);
+      })
+    }
   }
 
   private placeShipOnBoard(location: number, direction: string, name: string, size: number, boardIndex: number): void {
@@ -179,7 +224,7 @@ export class GamePageComponent implements OnInit {
 
   private isShipPlacementValid(board: number, location: number, direction: string, size: number): boolean {
     const shipIndexes = this.generateShipIndexes(location, direction, size);
-    console.log(shipIndexes);
+    // console.log(shipIndexes);
     return this.isShipOutOfBounds(shipIndexes) || this.hasShipOverlap(board, shipIndexes) || this.hasShipDiscontinuity(shipIndexes, direction) ? false : true;
   }
 
@@ -243,6 +288,11 @@ export class GamePageComponent implements OnInit {
     } else {
       this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.MISSED}`);
     }
+
+    // TODO:
+    if (this.gameMode === GameMode.MULTI_PLAYER) {
+      this.currentPlayer = this.getNextPlayer();
+    }
   }
 
   private generateMessage(content: string): void {
@@ -252,8 +302,19 @@ export class GamePageComponent implements OnInit {
   private checkIfShipSunk(boardIndex: number, shipName: string): void {
     const isShipSunk = this.boards[boardIndex].find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
     if (isShipSunk) {
+      // TODO:
       this.remainingShipsCount.update(count => count - 1);
-      this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
+      if (this.gameMode === GameMode.MULTI_PLAYER) {
+        const opponent = this.players[this.getNextPlayer()].playerName;
+        this.generateMessage(`${opponent} [${shipName}] HAS BEEN SUNK!`);
+      } else {
+        this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
+      }
     }
+  }
+
+  // TODO:
+  private getNextPlayer(): number {
+    return this.currentPlayer === Player.PLAYER_ONE ? Player.PLAYER_TWO : Player.PLAYER_ONE;
   }
 }
