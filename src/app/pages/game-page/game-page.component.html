@@ -1,5 +1,5 @@
 <div class="start-button-container">
-  <button class="start-button-container__button" (click)="startGame('Multi Player')">
+  <button class="start-button-container__button" (click)="startGame(gameMode)">
     <span></span>
     <span></span>
     <span></span>
@@ -12,10 +12,10 @@
   <div class="boards">
     @for (board of boards; track board; let boardIndex = $index) {
       <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
-        [ngClass]="{ 'board--disable': isGameComplete() || (gameMode === 'Multi Player' && currentPlayer === boardIndex) }">
+        [ngClass]="{ 'board--disable': isGameComplete() || (gameMode === 'Multi Player' && players[boardIndex].isTurn) }">
         <div class="board__player-label">{{ players[boardIndex].playerName }}
           @if (gameMode === 'Single Player') {
-            <span> (MISSILE COUNT: {{ missileCount() }})</span>
+            <span> [MISSILE COUNT: {{ players[boardIndex].missileCount() }}]</span>
           }
         </div>
         <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
@@ -37,7 +37,7 @@
             }" (click)="shoot(boardIndex, cellIndex)">
           </div>
         }
-        <div class="board__ships-count">THE NUMBER OF SHIPS LEFT: {{ remainingShipsCount() }}</div>
+        <div class="board__ships-count">THE NUMBER OF SHIPS LEFT: {{ players[boardIndex].remainingShips() }}</div>
       </div>
     }
   </div>
@@ -45,3 +45,6 @@
     <div class="game-info__message">{{ message }}</div>
   </div>
 </div>
+
+<button (click)="toggleGameMode()">Change Game Mode</button>
+<button (click)="clearMessage()">Clear Message</button>

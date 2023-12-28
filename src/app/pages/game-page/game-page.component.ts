@@ -15,9 +15,9 @@ interface Ship {
 
 interface PlayerInfo {
   playerName: string;
-  // TODO:
-  // isTurn: boolean;
-  // remainingShips: WritableSignal<number>;
+  isTurn: boolean;
+  remainingShips: WritableSignal<number>;
+  missileCount: WritableSignal<number>;
 }
 
 enum Direction {
@@ -30,11 +30,6 @@ enum Direction {
 enum ShotResult {
   HIT = 'TARGET HIT!',
   MISSED = 'MISSED!'
-}
-
-enum Player {
-  PLAYER_ONE = 0,
-  PLAYER_TWO = 1
 }
 
 enum GameMode {
@@ -55,9 +50,17 @@ export class GamePageComponent implements OnInit {
   constructor(private datePipe: DatePipe) {
     // Check for game status
     effect(() => {
-      if (this.remainingShipsCount() === 0) {
-        this.generateMessage('VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!');
-      } else if (!this.isMissileEnough()) {
+      if (this.isAnyPlayerAllShipsSunk()) {
+        this.players.find(player => {
+          if (player.remainingShips() === 0) {
+            if (this.gameMode === GameMode.MULTI_PLAYER) {
+              this.generateMessage(`GAME OVER! All SHIPS OF ${player.playerName} HAVE BEEN SUNK!`);
+            } else {
+              this.generateMessage('VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!');
+            }
+          }
+        })
+      } else if (this.isMissileExhausted()) {
         this.generateMessage('GAME OVER: OUT OF MISSILE');
       }
     });
@@ -79,15 +82,13 @@ export class GamePageComponent implements OnInit {
   boardRowsPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardRows() + 'px)');
   boardColumnsPx: Signal<string> = computed(() => 'calc(52 * ' + this.boardColumns() + 'px)');
 
+  // Game Information
   gameMode: GameMode = GameMode.MULTI_PLAYER;
   players: Array<PlayerInfo> = []
-  currentPlayer = Player.PLAYER_ONE;
-
-  isGameComplete: Signal<boolean> = computed(() => this.remainingShipsCount() === 0 || !this.isMissileEnough());
-  isMissileEnough: Signal<boolean> = computed(() => this.missileCount() > 0);
+  isAnyPlayerAllShipsSunk: Signal<boolean> = signal(false);
+  isMissileExhausted: Signal<boolean> = signal(false);
+  isGameComplete: Signal<boolean> = signal(false);
   message: string = '';
-  missileCount: WritableSignal<number> = signal(30);
-  remainingShipsCount: WritableSignal<number> = signal(this.ships.length);
 
   get currentTimestamp(): string {
     return `[${this.datePipe.transform(new Date(), 'HH:mm:ss')}]`
@@ -115,9 +116,9 @@ export class GamePageComponent implements OnInit {
     for (let i = 1; i <= numberOfPlayers; i++) {
       const player: PlayerInfo = {
         playerName: `PLAYER ${i}`,
-        // TODO:
-        // isTurn: this.gameMode === GameMode.SINGLE_PLAYER,
-        // remainingShips: signal(this.ships.length)
+        isTurn: false,
+        remainingShips: signal(this.ships.length),
+        missileCount: signal(30)
       }
 
       players.push(player);
@@ -273,12 +274,28 @@ export class GamePageComponent implements OnInit {
 
   private initializeGameData(): void {
     this.generateMessage('INITIALIZE GAME DATA...');
-    this.remainingShipsCount.set(this.ships.length);
-    this.missileCount.set(30);
+
+    this.isAnyPlayerAllShipsSunk = computed(() => {
+      return !!this.players.find(player => (player.remainingShips() === 0));
+    })
+
+    this.isMissileExhausted = computed(() => {
+      return !!this.players.find(player => (player.missileCount() === 0));
+    })
+
+    this.isGameComplete = computed(() => this.isAnyPlayerAllShipsSunk() || this.isMissileExhausted());
   }
 
   public shoot(boardIndex: number, cellIndex: number): void {
-    this.missileCount.update(count => count - 1);
+
+    if (this.gameMode === GameMode.SINGLE_PLAYER) {
+      this.players[boardIndex].missileCount.update(count => count - 1);
+    }
+
+    if (this.gameMode === GameMode.MULTI_PLAYER) {
+      this.switchPlayerTurn(boardIndex);
+    }
+
     const target = this.boards[boardIndex][cellIndex];
     target.hasBeenShot = true;
 
@@ -288,11 +305,12 @@ export class GamePageComponent implements OnInit {
     } else {
       this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.MISSED}`);
     }
+  }
 
-    // TODO:
-    if (this.gameMode === GameMode.MULTI_PLAYER) {
-      this.currentPlayer = this.getNextPlayer();
-    }
+  private switchPlayerTurn(currentPlayerIndex: number): void {
+    const nextPlayerIndex = (currentPlayerIndex + 1) % this.players.length;
+    this.players[currentPlayerIndex].isTurn = true;
+    this.players[nextPlayerIndex].isTurn = false;
   }
 
   private generateMessage(content: string): void {
@@ -302,19 +320,24 @@ export class GamePageComponent implements OnInit {
   private checkIfShipSunk(boardIndex: number, shipName: string): void {
     const isShipSunk = this.boards[boardIndex].find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
     if (isShipSunk) {
-      // TODO:
-      this.remainingShipsCount.update(count => count - 1);
+      this.players[boardIndex].remainingShips.update(count => count - 1);
       if (this.gameMode === GameMode.MULTI_PLAYER) {
-        const opponent = this.players[this.getNextPlayer()].playerName;
-        this.generateMessage(`${opponent} [${shipName}] HAS BEEN SUNK!`);
+        this.generateMessage(`${this.players[boardIndex].playerName} [${shipName}] HAS BEEN SUNK!`);
       } else {
         this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
       }
     }
   }
 
-  // TODO:
-  private getNextPlayer(): number {
-    return this.currentPlayer === Player.PLAYER_ONE ? Player.PLAYER_TWO : Player.PLAYER_ONE;
+  /** For testing purposes only. Toggles between single player and multi-player modes. */
+  public toggleGameMode(): void {
+    this.gameMode = this.gameMode === GameMode.SINGLE_PLAYER ? GameMode.MULTI_PLAYER : GameMode.SINGLE_PLAYER;
+    this.startGame(this.gameMode);
   }
+
+  /** For testing purposes only. Clears the current message. */
+  public clearMessage(): void {
+    this.message = '';
+  }
+
 }
