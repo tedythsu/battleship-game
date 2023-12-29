@@ -47,24 +47,7 @@ enum GameMode {
 })
 export class GamePageComponent implements OnInit {
 
-  constructor(private datePipe: DatePipe) {
-    // Check for game status
-    effect(() => {
-      if (this.isAnyPlayerAllShipsSunk()) {
-        this.players.find(player => {
-          if (player.remainingShips() === 0) {
-            if (this.gameMode === GameMode.MULTI_PLAYER) {
-              this.generateMessage(`GAME OVER! All SHIPS OF ${player.playerName} HAVE BEEN SUNK!`);
-            } else {
-              this.generateMessage('VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!');
-            }
-          }
-        })
-      } else if (this.isMissileExhausted()) {
-        this.generateMessage('GAME OVER: OUT OF MISSILE');
-      }
-    });
-  }
+  constructor(private datePipe: DatePipe) {}
 
   ships: Array<Ship> = [
     {name: 'Destroyer', size: 2},
@@ -96,8 +79,6 @@ export class GamePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.startGame(this.gameMode);
-    console.log('Player Information', this.players);
-    console.log('Board Information', this.boards);
   }
 
   public startGame(gameMode: string): void {
@@ -107,6 +88,8 @@ export class GamePageComponent implements OnInit {
     this.generateShipsOnGameBoard(numberOfPlayers);
     this.initializeGameData();
     this.generateMessage('---GAME STARTED---');
+    console.log('Player Information', this.players);
+    console.log('Board Information', this.boards);
   }
 
   /** Generates player information for each player in the game */
@@ -304,6 +287,21 @@ export class GamePageComponent implements OnInit {
       this.checkIfShipSunk(boardIndex, target.ship);
     } else {
       this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.MISSED}`);
+    }
+
+    if (this.isGameComplete()) {
+      this.handleEndGameStatus(boardIndex);
+    }
+  }
+
+  private handleEndGameStatus(playerIndex: number): void {
+    if (this.isAnyPlayerAllShipsSunk()) {
+      const message = (this.gameMode === GameMode.MULTI_PLAYER)
+      ? `GAME OVER! ALL SHIPS OF ${this.players[playerIndex].playerName} HAVE BEEN SUNK!`
+      : 'VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!';
+      this.generateMessage(message);
+    } else if (this.isMissileExhausted()) {
+      this.generateMessage('GAME OVER: OUT OF MISSILE');
     }
   }
 
