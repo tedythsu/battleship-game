@@ -67,6 +67,29 @@
             font-size: 1rem;
             letter-spacing: 0.3rem;
           }
+
+          .weather-information {
+            display: flex;
+            flex-wrap: wrap;
+            max-height: 30px;
+
+            &__loading-text {
+              animation: loading 1s infinite alternate;
+
+              @keyframes loading {
+                0% {
+                  opacity: 0;
+                }
+                100% {
+                  opacity: 1;
+                }
+              }
+            }
+
+            &__timezone-text {
+              font-size: 0.75rem;
+            }
+          }
         }
       }
 

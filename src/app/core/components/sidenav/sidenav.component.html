@@ -25,6 +25,22 @@
           <span class="link-text">ABOUT</span>
         </a>
       </li>
+      <!-- Weather Information -->
+      <li>
+        <a href="https://open-meteo.com/" target="_blank">
+          <img class="link-icon" src="assets/icons/weather-forecast.png" alt="document">
+          <div>
+            <div class="weather-information">
+              @defer (when weatherData.generationtime_ms > 0) {
+              <span class="link-text">{{ weatherData.current.temperature_2m }}&deg;</span>
+              <span class="weather-information__timezone-text link-text">{{ weatherData.timezone }}</span>
+              } @placeholder (minimum 5000ms) {
+              <span class="weather-information__loading-text link-text">Loading...</span>
+              }
+            </div>
+          </div>
+        </a>
+      </li>
     </ul>
   </nav>
 <div class="mask"></div>
