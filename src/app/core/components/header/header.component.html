@@ -5,5 +5,6 @@
         <input [ngModel]="darkMode()" type="checkbox" id="color_mode" (ngModelChange)="toggleDarkMode()">
         <label for="color_mode" data-on="Dark" data-off="Light" class="color-mode-switch-inner"></label>
       </label>
+      <img class="color-mode-switch-icon" (click)="toggleDarkMode()"  src="assets/icons/dark-mode.png" alt="dark-mode">
   </div>
 </header>
