@@ -8,22 +8,38 @@
   </button>
 </div>
 
-<div class="main">
   <div class="boards">
     @for (board of boards; track board; let boardIndex = $index) {
-      <div class="board" [ngStyle]="{ 'width': boardColumnsPx(), 'height': boardRowsPx() }"
-        [ngClass]="{ 'board--disable': isGameComplete() || (gameMode === 'Multi Player' && players[boardIndex].isTurn) }">
+      <div class="board"
+        [ngStyle]="{
+          'width': 'calc(7 * ' + boardColumns() + 'vw)',
+          'height': 'calc(7 * ' + boardRows() + 'vw)',
+          'max-width': 'calc(50 * ' + boardColumns() + 'px)',
+          'max-height': 'calc(50 * ' + boardRows() + 'px)'
+          }"
+        [ngClass]="{
+          'board--disable': isGameComplete() ||
+          (gameMode === 'Multi Player' && players[boardIndex].isTurn)
+          }">
         <div class="board__player-label">{{ players[boardIndex].playerName }}
           @if (gameMode === 'Single Player') {
             <span> [MISSILE COUNT: {{ players[boardIndex].missileCount() }}]</span>
           }
         </div>
-        <div class="board__coordinates board__coordinates--numbers" [ngStyle]="{ 'width': boardColumnsPx() }">
+        <div class="board__coordinates board__coordinates--numbers"
+          [ngStyle]="{
+            'width': 'calc(7 * ' + boardColumns() + 'vw)',
+            'max-width': 'calc(50 * ' + boardColumns() + 'px)'
+            }">
           @for (column of [].constructor(boardColumns()); track $index) {
             <div>{{ $index + 1 }}</div>
           }
         </div>
-        <div class="board__coordinates board__coordinates--letters" [ngStyle]="{ 'height': boardRowsPx() }">
+        <div class="board__coordinates board__coordinates--letters"
+          [ngStyle]="{
+            'height': 'calc(7 * ' + boardRows() + 'vw)',
+            'max-height': 'calc(50 * ' + boardRows() + 'px)'
+            }">
           @for (row of [].constructor(boardRows()); track $index) {
             <div>{{ alphabetLetters[$index] }}</div>
           }
@@ -37,14 +53,13 @@
             }" (click)="shoot(boardIndex, cellIndex)">
           </div>
         }
-        <div class="board__ships-count">THE NUMBER OF SHIPS LEFT: {{ players[boardIndex].remainingShips() }}</div>
+        <div class="board__ships-count">SHIPS LEFT: {{ players[boardIndex].remainingShips() }}</div>
       </div>
     }
   </div>
-  <div class="game-info" [ngStyle]="{ 'min-width': boardColumnsPx() }">
+  <div class="game-info">
     <div class="game-info__message">{{ message }}</div>
   </div>
-</div>
 
 <button (click)="toggleGameMode()">Change Game Mode</button>
 <button (click)="clearMessage()">Clear Message</button>
