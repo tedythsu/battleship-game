@@ -71,9 +71,12 @@
           .weather-information {
             display: flex;
             flex-wrap: wrap;
-            max-height: 30px;
 
-            &__loading-text {
+            .link-text {
+              font-size: 0.5em;
+            }
+
+            &__loading {
               animation: loading 1s infinite alternate;
 
               @keyframes loading {
@@ -84,10 +87,6 @@
                   opacity: 1;
                 }
               }
-            }
-
-            &__timezone-text {
-              font-size: 0.75rem;
             }
           }
         }

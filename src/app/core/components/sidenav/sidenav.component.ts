@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SidenavService } from '../../services/sidenav.service';
 import { RouterModule } from '@angular/router';
 import { WeatherService, WeatherDataResponse } from '../../services/weather.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
@@ -41,15 +42,17 @@ export class SidenavComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.getWeatherData();
+    this.updateWeatherData();
   }
 
-  private getWeatherData() {
-    this.weatherService.$getWeatherData().subscribe(
-      (data: WeatherDataResponse) => {
-        this.weatherData = data;
-      }
-    )
+  private getWeatherData$(): Observable<WeatherDataResponse> {
+    return this.weatherService.getWeatherData$();
+  }
+
+  private updateWeatherData(): void {
+    this.getWeatherData$().subscribe(
+      (data: WeatherDataResponse) => this.weatherData = data
+    );
   }
 
   get isSidenavOpen() {
