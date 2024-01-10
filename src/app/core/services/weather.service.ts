@@ -31,12 +31,14 @@ export class WeatherService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public $getWeatherData(): Observable<WeatherDataResponse> {
+  public getWeatherData$(): Observable<WeatherDataResponse> {
     return new Observable(observer => {
       navigator.geolocation.getCurrentPosition((position) => {
         const weatherApiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&current=temperature_2m,precipitation,weather_code&timezone=auto`;
 
-        this.httpClient.get<WeatherDataResponse>(weatherApiUrl).subscribe(data => {
+        this.httpClient.get<WeatherDataResponse>(weatherApiUrl, {observe: 'response'}).subscribe(response => {
+          const data = response.body as WeatherDataResponse;
+          console.log(response);
           observer.next(data);
         });
       });
