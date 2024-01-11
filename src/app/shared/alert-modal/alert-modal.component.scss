@@ -1,0 +1,83 @@
+.dialog {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  box-shadow: 0 4px 5px rgb(0 0 0 / 30%);
+  border-radius: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 50vw;
+  min-width: 150px;
+  animation: fade-out .25s ease-out;
+
+  &[open] {
+    animation: fade-in .25s ease-out;
+  }
+
+  &::backdrop {
+    animation: backdrop-fade-in .25s ease-out forwards;
+  }
+
+  &__text {
+    font-size: 1.5rem;
+    text-align: center;
+    white-space: pre-line;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    min-width: 100px;
+    min-height: 50px;
+    font-family: monospace;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity .25s ease;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}
+
+/* Dialog Animation keyframes */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+    display: none;
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block;
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleY(0);
+    display: none;
+  }
+}
+
+@keyframes backdrop-fade-in {
+  0% {
+    background-color: rgb(0 0 0 / 0);
+  }
+
+  100% {
+    background-color: hsla(0, 0%, 0%, 0.75);
+  }
+}
