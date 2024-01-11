@@ -1,6 +1,7 @@
-import { Component, OnInit, Signal, WritableSignal, computed, signal, effect } from '@angular/core';
+import { Component, OnInit, Signal, WritableSignal, computed, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
+import { AlertModalComponent } from 'src/app/shared/alert-modal/alert-modal.component';
 
 interface BoardCell {
   location: string;
@@ -40,12 +41,15 @@ enum GameMode {
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AlertModalComponent],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss',
   providers: [DatePipe],
 })
 export class GamePageComponent implements OnInit {
+
+  @ViewChild(AlertModalComponent)
+  private alertModal!: AlertModalComponent;
 
   constructor(private datePipe: DatePipe) {}
 
@@ -295,13 +299,15 @@ export class GamePageComponent implements OnInit {
   }
 
   private handleEndGameStatus(playerIndex: number): void {
+    this.generateMessage('---GAME OVER---');
     if (this.isAnyPlayerAllShipsSunk()) {
+      const winnerIndex = (playerIndex + 1) % this.players.length;
       const message = (this.gameMode === GameMode.MULTI_PLAYER)
-      ? `GAME OVER! ALL SHIPS OF ${this.players[playerIndex].playerName} HAVE BEEN SUNK!`
+      ? `${this.players[winnerIndex].playerName} WIN!`
       : 'VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!';
-      this.generateMessage(message);
+      this.alertModal.showModal(message);
     } else if (this.isMissileExhausted()) {
-      this.generateMessage('GAME OVER: OUT OF MISSILE');
+      this.alertModal.showModal('GAME OVER: OUT OF MISSILE');
     }
   }
 
