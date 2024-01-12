@@ -1,0 +1,44 @@
+.login-container {
+  margin: auto;
+  max-width: 300px;
+
+  &__title {
+    font-size: 4rem;
+    text-align: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    input {
+      border: 1px solid black;
+    }
+
+    input, button {
+      height: 50px;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-family: monospace;
+    }
+
+    button {
+      color: white;
+      background-color: #0066ff;
+      transition: opacity .25s ease;
+      border: none;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 0.75;
+      }
+    }
+  }
+
+  &__user-agreement {
+    opacity: 0.5;
+    font-size: 0.6rem;
+  }
+}
