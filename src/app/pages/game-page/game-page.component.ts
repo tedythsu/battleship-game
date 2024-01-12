@@ -1,7 +1,7 @@
 import { Component, OnInit, Signal, WritableSignal, computed, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { AlertModalComponent } from 'src/app/shared/alert-modal/alert-modal.component';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 interface BoardCell {
   location: string;
@@ -41,17 +41,14 @@ enum GameMode {
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [CommonModule, AlertModalComponent],
+  imports: [CommonModule],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss',
   providers: [DatePipe],
 })
 export class GamePageComponent implements OnInit {
 
-  @ViewChild(AlertModalComponent)
-  private alertModal!: AlertModalComponent;
-
-  constructor(private datePipe: DatePipe) {}
+  constructor(private datePipe: DatePipe, private alertService: AlertService) {}
 
   ships: Array<Ship> = [
     {name: 'Destroyer', size: 2},
@@ -305,9 +302,9 @@ export class GamePageComponent implements OnInit {
       const message = (this.gameMode === GameMode.MULTI_PLAYER)
       ? `${this.players[winnerIndex].playerName} WIN!`
       : 'VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!';
-      this.alertModal.showModal(message);
+      this.alertService.showModal(message);
     } else if (this.isMissileExhausted()) {
-      this.alertModal.showModal('GAME OVER: OUT OF MISSILE');
+      this.alertService.showModal('GAME OVER: OUT OF MISSILE');
     }
   }
 
