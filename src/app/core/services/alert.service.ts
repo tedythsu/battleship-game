@@ -15,42 +15,42 @@ export class AlertService {
 
   showModal(message: string): void {
     if (!this.alertModalRef) {
-      // 創建 AlertModalComponent 的 factory
+      // Create the factory for AlertModalComponent
       const factory = this.resolver.resolveComponentFactory(AlertModalComponent);
 
-      // 創建 AlertModalComponent 的實例
+      // Create an instance of AlertModalComponent
       const componentRef = factory.create(this.injector);
 
-      // 設定提示訊息
+      // Set the message
       componentRef.instance.dialogMessage = message;
 
-      // 將 AlertModalComponent 的實例插入到應用的 DOM 中
+      // Attach the instance of AlertModalComponent to the application's DOM
       this.appRef.attachView(componentRef.hostView);
 
-      // 獲取 AlertModalComponent 的 DOM 元素
+      // Get the DOM element of AlertModalComponent
       const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
 
-      // 將 DOM 元素附加到 body 中
+      // Append the DOM element to the body
       document.body.appendChild(domElem);
 
-      // 設定 alertModalRef
+      // Set alertModalRef
       this.alertModalRef = componentRef.hostView as EmbeddedViewRef<any>;
 
       componentRef.instance.showModal(message);
 
-      // 實現關閉 modal 的邏輯
+      // Implement the logic to close the modal
       componentRef.instance.closeModal = () => {
-        this.closeModal();
-      };
-    }
-  }
+        const dialog = document.querySelector("dialog");
+        dialog?.close();
 
-  closeModal(): void {
-    if (this.alertModalRef) {
-      // 釋放資源
-      this.appRef.detachView(this.alertModalRef);
-      this.alertModalRef.destroy();
-      this.alertModalRef = null;
+        setTimeout(() => {
+          if (this.alertModalRef) {
+            this.appRef.detachView(this.alertModalRef);
+            this.alertModalRef.destroy();
+            this.alertModalRef = null;
+          }
+        }, 250);
+      };
     }
   }
 }
