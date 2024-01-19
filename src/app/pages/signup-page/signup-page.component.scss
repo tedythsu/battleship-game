@@ -1,0 +1,63 @@
+.signup-container {
+  margin: auto;
+  max-width: 300px;
+
+  &__title {
+    font-size: 4rem;
+    text-align: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    input {
+      border: 1px solid black;
+    }
+
+    input.ng-touched.ng-invalid {
+      border: 2px solid red;
+    }
+
+    input, button {
+      height: 50px;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-family: monospace;
+    }
+
+    button {
+      color: white;
+      background-color: #0066ff;
+      transition: opacity .25s ease;
+      border: none;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 0.75;
+      }
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.75;
+      }
+    }
+
+    .validation-error {
+      color: red;
+    }
+  }
+
+  &__link {
+    color: var(--text-color);
+    opacity: 0.75;
+    text-decoration: none;
+    transition: opacity .25s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
