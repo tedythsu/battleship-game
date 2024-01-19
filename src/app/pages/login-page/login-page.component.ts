@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AlertService } from 'src/app/core/services/alert.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -13,7 +15,7 @@ import { AlertService } from 'src/app/core/services/alert.service';
 })
 export class LoginPageComponent {
 
-  constructor(private alertService: AlertService) {}
+  constructor(private alertService: AlertService, private authService: AuthService, private router: Router) {}
 
   loginForm = new FormGroup({
     id: new FormControl('', [Validators.required, this.taiwanIdValidator]),
@@ -43,7 +45,11 @@ export class LoginPageComponent {
     if (accountData) {
       const accountPassword = JSON.parse(accountData).password;
       if (password === accountPassword) {
+        const accountUsername = JSON.parse(accountData).username;
+        this.authService.isLoggedIn = true;
+        this.authService.username = accountUsername;
         this.alertService.showModal('Login successful');
+        this.router.navigate(['/settings']);
       } else {
         this.alertService.showModal('Incorrect password');
       }
