@@ -6,6 +6,12 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Router } from '@angular/router';
 
+interface User {
+  id: string,
+  password: string,
+  username?: string
+}
+
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -34,18 +40,21 @@ export class LoginPageComponent {
   }
 
   public onLoginClick(): void {
-    const id = this.loginForm.value.id ?? '';
-    const password = this.loginForm.value.password ?? '';
-    this.authenticateUser(id, password);
+    const user: User = {
+      id: this.loginForm.value.id ?? '',
+      password: this.loginForm.value.password ?? '',
+    }
+
+    this.authenticateUser(user);
   }
 
-  private authenticateUser(id: string, password: string): void {
-    const accountData = sessionStorage.getItem(id);
+  private authenticateUser(user: User): void {
+    const accountData = sessionStorage.getItem(btoa(user.id));
 
     if (accountData) {
-      const accountPassword = JSON.parse(accountData).password;
-      if (password === accountPassword) {
-        const accountUsername = JSON.parse(accountData).username;
+      const accountPassword: string = JSON.parse(atob(accountData)).password;
+      if (user.password === accountPassword) {
+        const accountUsername: string = JSON.parse(atob(accountData)).username;
         this.authService.isLoggedIn = true;
         this.authService.username = accountUsername;
         this.alertService.showModal('Login successful');

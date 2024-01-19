@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AlertService } from 'src/app/core/services/alert.service';
+
+interface User {
+  id: string,
+  password: string,
+  username: string
+}
 
 @Component({
   selector: 'app-signup-page',
@@ -13,7 +19,7 @@ import { AlertService } from 'src/app/core/services/alert.service';
 })
 export class SignupPageComponent {
 
-  constructor(private alertService: AlertService) {}
+  constructor(private alertService: AlertService, private router: Router) {}
 
   signupForm = new FormGroup({
     id: new FormControl('', [Validators.required, this.taiwanIdValidator]),
@@ -33,9 +39,14 @@ export class SignupPageComponent {
   }
 
   public onSignUpClick(): void {
-    const id = this.signupForm.value.id;
-    if (id && !this.checkIfIdIsRegistered(id)) {
-      this.performRegistration();
+    const user: User = {
+      id: this.signupForm.value.id ?? '',
+      password: this.signupForm.value.password ?? '',
+      username: this.signupForm.value.username ?? ''
+    }
+
+    if (!this.checkIfIdIsRegistered(user.id)) {
+      this.performRegistration(user);
     } else {
       this.alertService.showModal('This ID is already registered');
     }
@@ -46,18 +57,14 @@ export class SignupPageComponent {
     return !!isIdRegistered ? true : false;
   }
 
-  private performRegistration(): void {
-    const user = {
-      password: this.signupForm.value.password,
-      username: this.signupForm.value.username,
-    };
-
+  private performRegistration(user: User): void {
     sessionStorage.setItem(
-      this.signupForm.value.id!,
-      JSON.stringify(user)
+      btoa(user.id),
+      btoa(JSON.stringify(user))
     );
 
     this.alertService.showModal('Registration successful!');
+    this.router.navigate(['/login']);
   }
 
 }
