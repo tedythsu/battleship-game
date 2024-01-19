@@ -53,7 +53,7 @@ export class SignupPageComponent {
   }
 
   private checkIfIdIsRegistered(id: string): boolean {
-    const isIdRegistered = sessionStorage.getItem(id);
+    const isIdRegistered = sessionStorage.getItem(btoa(id));
     return !!isIdRegistered ? true : false;
   }
 
