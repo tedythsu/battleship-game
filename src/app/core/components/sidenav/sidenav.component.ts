@@ -4,6 +4,7 @@ import { SidenavService } from '../../services/sidenav.service';
 import { RouterModule } from '@angular/router';
 import { WeatherService, WeatherDataResponse } from '../../services/weather.service';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -16,8 +17,13 @@ export class SidenavComponent implements OnInit {
 
   constructor(
     private sidenav: SidenavService,
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    private authService: AuthService
   ) {}
+
+  get isLoggedIn() {
+    return this.authService.isLoggedIn;
+  }
 
   weatherData: WeatherDataResponse = {
     latitude: 0,
@@ -53,6 +59,10 @@ export class SidenavComponent implements OnInit {
     this.getWeatherData$().subscribe(
       (data: WeatherDataResponse) => this.weatherData = data
     );
+  }
+
+  public logout(): void {
+    this.authService.logout();
   }
 
   get isSidenavOpen() {
