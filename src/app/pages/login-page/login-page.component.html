@@ -1,10 +1,17 @@
 <div class="login-container">
-  <h1 class="login-container__title">Log In</h1>
-  <form class="login-container__form">
-    <input type="text" placeholder="ID">
-    <input type="password" placeholder="Password">
-    <button>Log in</button>
+  <h1 class="login-container__title">Login</h1>
+  <form [formGroup]="loginForm" class="login-container__form" (ngSubmit)="onLoginClick()">
+    <!-- ID -->
+    <label for="id">ID</label>
+    <input id="id" formControlName="id" type="text" placeholder="ID">
+    @if (loginForm.get('id')?.touched && loginForm.get('id')?.errors?.['invalidTaiwanId']) {
+      <div class="validation-error">ID is invalid.</div>
+    }
+    <!-- Password -->
+    <label for="password">Password</label>
+    <input id="password" formControlName="password" type="password" placeholder="Password">
+    <!-- Log in -->
+    <button type="submit" [disabled]="this.loginForm.invalid">Log in</button>
   </form>
-  <p class="login-container__user-agreement">By continuing, you agree to our Terms of Service.</p>
-  <p class="login-container__user-agreement">Read our Privacy Policy.</p>
+  <p>Don't have an account? <a routerLink="/signup" class="login-container__link">Sign up</a></p>
 </div>
