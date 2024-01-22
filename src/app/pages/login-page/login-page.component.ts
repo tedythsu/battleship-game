@@ -2,15 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { Router } from '@angular/router';
-
-interface User {
-  id: string,
-  password: string,
-  username?: string
-}
 
 @Component({
   selector: 'app-login-page',
@@ -21,7 +13,7 @@ interface User {
 })
 export class LoginPageComponent {
 
-  constructor(private alertService: AlertService, private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   loginForm = new FormGroup({
     id: new FormControl('', [Validators.required, this.taiwanIdValidator]),
@@ -40,31 +32,9 @@ export class LoginPageComponent {
   }
 
   public onLoginClick(): void {
-    const user: User = {
-      id: this.loginForm.value.id ?? '',
-      password: this.loginForm.value.password ?? '',
-    }
-
-    this.authenticateUser(user);
-  }
-
-  private authenticateUser(user: User): void {
-    const accountData = sessionStorage.getItem(btoa(user.id));
-
-    if (accountData) {
-      const accountPassword: string = JSON.parse(atob(accountData)).password;
-      if (user.password === accountPassword) {
-        const accountUsername: string = JSON.parse(atob(accountData)).username;
-        this.authService.isLoggedIn = true;
-        this.authService.username = accountUsername;
-        this.alertService.showModal('Login successful');
-        this.router.navigate(['/settings']);
-      } else {
-        this.alertService.showModal('Incorrect password');
-      }
-    } else {
-      this.alertService.showModal('Account does not exist');
-    }
+    const id = this.loginForm.value.id as string;
+    const password = this.loginForm.value.password as string;
+    this.authService.authenticateUser(id, password);
   }
 
 }
