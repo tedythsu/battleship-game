@@ -1,14 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { AlertService } from 'src/app/core/services/alert.service';
-
-interface User {
-  id: string,
-  password: string,
-  username: string
-}
+import { RouterModule } from '@angular/router';
+import { UserService, User, GameMode, Difficulty } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-signup-page',
@@ -19,7 +13,7 @@ interface User {
 })
 export class SignupPageComponent {
 
-  constructor(private alertService: AlertService, private router: Router) {}
+  constructor(private userService: UserService) {}
 
   signupForm = new FormGroup({
     id: new FormControl('', [Validators.required, this.taiwanIdValidator]),
@@ -42,29 +36,12 @@ export class SignupPageComponent {
     const user: User = {
       id: this.signupForm.value.id ?? '',
       password: this.signupForm.value.password ?? '',
-      username: this.signupForm.value.username ?? ''
+      username: this.signupForm.value.username ?? '',
+      gameMode: GameMode.SINGLE_PLAYER,
+      difficulty: Difficulty.EASY
     }
 
-    if (!this.checkIfIdIsRegistered(user.id)) {
-      this.performRegistration(user);
-    } else {
-      this.alertService.showModal('This ID is already registered');
-    }
-  }
-
-  private checkIfIdIsRegistered(id: string): boolean {
-    const isIdRegistered = sessionStorage.getItem(btoa(id));
-    return !!isIdRegistered ? true : false;
-  }
-
-  private performRegistration(user: User): void {
-    sessionStorage.setItem(
-      btoa(user.id),
-      btoa(JSON.stringify(user))
-    );
-
-    this.alertService.showModal('Registration successful!');
-    this.router.navigate(['/login']);
+    this.userService.registerUser(user);
   }
 
 }
