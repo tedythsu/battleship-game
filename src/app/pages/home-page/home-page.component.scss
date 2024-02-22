@@ -20,3 +20,19 @@
     color: white;
   }
 }
+
+.game-modes {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-left: 0;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-top: 3rem;
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+}

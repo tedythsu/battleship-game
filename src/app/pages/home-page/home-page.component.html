@@ -1,4 +1,4 @@
-<article>
+<!-- <article>
   <section class="welcome-text">
     <h2>
       Ahoy, Admiral!
@@ -14,4 +14,21 @@
       Image: Taken from the movie <em>Battleship (2012)</em>
     </small>
   </figure>
-</article>
+</article> -->
+
+<main>
+  <article>
+    <figure class="welcome-image">
+      <img src="assets/images/welcome-img.gif" />
+    </figure>
+    <ul class="game-modes">
+      <li (click)="navigateToGame('Single Player')">
+        1 Player Game
+      </li>
+      <li (click)="navigateToGame('Multi Player')">
+        2 Players Game
+      </li>
+    </ul>
+  </article>
+</main>
+
