@@ -68,4 +68,8 @@ export class SidenavComponent implements OnInit {
   get isSidenavOpen() {
     return this.sidenav.isSidenavOpen;
   }
+
+  public sidenavToggle() {
+    this.sidenav.toggle();
+  }
 }

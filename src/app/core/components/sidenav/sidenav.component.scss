@@ -4,7 +4,7 @@
   box-sizing: border-box;
   background-color: var(--bg-color);
   transition: 0.25s all cubic-bezier(.36, -0.01, 0, .77);
-  padding: 2rem 1rem;
+  padding: 2rem 0rem;
   position: fixed;
   z-index: 10;
 
@@ -13,14 +13,24 @@
   #8EABC9 5%,
   var(--bg-color) 100%) 0 100% 0 0/0 1px 0 0 stretch;
 
-  &:hover {
+  &--open {
     width: var(--sidenav-open-width);
+    padding: 2rem 1rem;
 
     ~ .mask {
       background: rgba(0, 0, 0, 0.75);
       pointer-events: all;
     }
   }
+
+  // &:hover {
+  //   width: var(--sidenav-open-width);
+
+  //   ~ .mask {
+  //     background: rgba(0, 0, 0, 0.75);
+  //     pointer-events: all;
+  //   }
+  // }
 
   nav {
     ul {
