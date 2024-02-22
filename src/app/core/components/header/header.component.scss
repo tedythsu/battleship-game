@@ -16,12 +16,19 @@
   #8EABC9 50%,
   var(--bg-color) 100%) 0 0 100% 0/0 0 3px 0 stretch;
 
+  &__menu {
+    position: absolute;
+    left: 1rem;
+    width: 2rem;
+    cursor: pointer;
+  }
+
   &__title {
-    font-family: 'Blanka';
-    letter-spacing: 0.5rem;
-    margin: 0;
-    position: relative;
-    bottom: 6px;
+    // font-family: 'Blanka';
+    // letter-spacing: 0.5rem;
+    // margin: 0;
+    // position: relative;
+    // bottom: 6px;
     cursor: default;
     font-size: 1.5rem;
   }
