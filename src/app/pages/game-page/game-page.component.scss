@@ -175,12 +175,12 @@
         }
 
         &--has-been-shot {
-          background-image: url("/assets/icons/cross-modified.png");
+          background-image: url("../../../assets/icons/cross-modified.png");
           pointer-events: none;
         }
 
         &--shipwreck {
-          background-image: url("/assets/icons/explode.png");
+          background-image: url("../../../assets/icons/explode.png");
           pointer-events: none;
           animation: shake 0.25s;
         }
