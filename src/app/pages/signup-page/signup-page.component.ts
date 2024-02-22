@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { UserService, User, GameMode, Difficulty } from 'src/app/core/services/user.service';
+import { UserService, User, GameMode, Difficulty, BoardSize } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-signup-page',
@@ -37,6 +37,7 @@ export class SignupPageComponent {
       id: this.signupForm.value.id ?? '',
       password: this.signupForm.value.password ?? '',
       username: this.signupForm.value.username ?? '',
+      boardSize: BoardSize._6x6,
       gameMode: GameMode.SINGLE_PLAYER,
       difficulty: Difficulty.EASY
     }
