@@ -2,6 +2,7 @@ import { Component, OnInit, Signal, WritableSignal, computed, signal, ViewChild 
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AlertService } from 'src/app/core/services/alert.service';
+import { Router } from '@angular/router';
 
 interface BoardCell {
   location: string;
@@ -48,7 +49,9 @@ enum GameMode {
 })
 export class GamePageComponent implements OnInit {
 
-  constructor(private datePipe: DatePipe, private alertService: AlertService) {}
+  constructor(private datePipe: DatePipe, private alertService: AlertService, private router: Router) {
+    this.gameMode = this.router.getCurrentNavigation()?.extras.state!['gameMode'];
+  }
 
   ships: Array<Ship> = [
     {name: 'Destroyer', size: 2},
