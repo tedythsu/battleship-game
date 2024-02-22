@@ -2,6 +2,15 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from './alert.service';
 
+export enum BoardSize {
+  _6x6 = 6,
+  _7x7 = 7,
+  _8x8 = 8,
+  _10x10 = 10,
+  _12x12 = 12,
+  _15x15 = 15
+}
+
 export enum GameMode {
   SINGLE_PLAYER = 'Single Player',
   MULTI_PLAYER = 'Multi Player'
@@ -17,6 +26,7 @@ export interface User {
   id: string,
   password: string,
   username: string,
+  boardSize: number,
   gameMode: GameMode,
   difficulty: Difficulty,
 }
@@ -34,6 +44,7 @@ export class UserService {
     id: '',
     password: '',
     username: '',
+    boardSize: 6,
     gameMode: GameMode.SINGLE_PLAYER,
     difficulty: Difficulty.EASY
   }
@@ -80,6 +91,10 @@ export class UserService {
     const encodedId = this.BASE64_ENCODE(user.id);
     const encodedUserData = this.BASE64_ENCODE(JSON.stringify(user));
     sessionStorage.setItem(encodedId, encodedUserData);
+  }
+
+  public updateUser(user: any): void {
+    this.storeUserData(user);
   }
 
   /**
