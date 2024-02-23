@@ -21,14 +21,17 @@
     background-color: var(--bg-color);
     border: 0;
 
-    &:hover {
-      background: #03e9f4;
-      color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 5px #03e9f4,
-                  0 0 25px #03e9f4,
-                  0 0 50px #03e9f4,
-                  0 0 100px #03e9f4;
+    // only if the device has true hover functionality:
+    @media (hover: hover) {
+      &:hover {
+        background: #03e9f4;
+        color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #03e9f4,
+                    0 0 25px #03e9f4,
+                    0 0 50px #03e9f4,
+                    0 0 100px #03e9f4;
+      }
     }
 
     span {
@@ -125,7 +128,6 @@
       position: relative;
       margin-left: 1.5rem;
       display: flex;
-      // flex-shrink: 0;
       aspect-ratio: 1/1;
       flex: 1;
       flex-wrap: wrap;
@@ -166,17 +168,18 @@
 
       &__cell {
         box-sizing: border-box;
-        // width: calc(7vw);
-        // height: calc(7vw);
         max-width: 50px;
         max-height: 50px;
         border: 1px solid;
         background-size: cover;
         transition: background-color 0.5s ease;
 
-        &:hover {
-          background-color: red;
-          cursor: pointer;
+        // only if the device has true hover functionality:
+        @media (hover: hover) {
+          &:hover {
+            background-color: red;
+            cursor: pointer;
+          }
         }
 
         &--has-been-shot {
