@@ -2,7 +2,7 @@
 
 body {
   margin: 0;
-  font-family: monospace;
+  font-family: 'Beon';
   overflow: hidden;
   --bg-color: #000000;
   --text-color: #FFFFFF;
@@ -21,8 +21,8 @@ body {
 }
 
 @font-face {
-  font-family: 'Blanka';
-  src: url('assets/fonts/BLANKA/Blanka-Regular.otf') format('truetype');
+  font-family: 'Beon';
+  src: url('assets/fonts/beon/Beon-Regular.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

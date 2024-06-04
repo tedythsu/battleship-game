@@ -7,7 +7,6 @@
 
   &__button {
     cursor: pointer;
-    font-family: monospace;
     position: relative;
     display: inline-block;
     padding: 10px 20px;
@@ -206,7 +205,6 @@
     flex: 1;
     flex-direction: column;
     gap: 1rem;
-    font-family: monospace;
     letter-spacing: .15em;
 
     &__message {
