@@ -134,9 +134,12 @@
       border: 2px solid;
       opacity: 1;
       transition: opacity 0.5s ease;
+      background: rgb(2,0,36);
+      background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(30,59,112,1) 50%, rgba(2,0,36,1) 100%);
 
       &__player-label {
         pointer-events: none;
+        color: #666666;
         position: absolute;
         top: -52px;
       }
@@ -145,6 +148,7 @@
         pointer-events: none;
         position: absolute;
         bottom: -26px;
+        color: #B33A3A;
       }
 
       &__coordinates {
