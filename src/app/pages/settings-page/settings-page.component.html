@@ -1,6 +1,6 @@
 <div class="settings-container">
   <h1 class="settings-container__title">Settings</h1>
-  <form [formGroup]="settingsForm" class="settings-container__form" (ngSubmit)="onSaveClick()">
+  <form [formGroup]="settingsForm" class="settings-container__form">
     <!-- Username -->
     <label for="username">Username</label>
     <input id="username" formControlName="username" type="text" placeholder="ID">
@@ -10,25 +10,25 @@
     <!-- Size -->
     <label for="boardSize">Size</label>
     <select formControlName="boardSize" name="boardSize" id="boardSize">
-      <option [value]="boardSize._6x6">{{ boardSize._6x6 }} x {{ boardSize._6x6 }}</option>
+      <!-- <option [value]="boardSize._6x6">{{ boardSize._6x6 }} x {{ boardSize._6x6 }}</option>
       <option [value]="boardSize._7x7">{{ boardSize._7x7 }} x {{ boardSize._7x7 }}</option>
       <option [value]="boardSize._8x8">{{ boardSize._8x8 }} x {{ boardSize._8x8 }}</option>
       <option [value]="boardSize._10x10">{{ boardSize._10x10 }} x {{ boardSize._10x10 }}</option>
       <option [value]="boardSize._12x12">{{ boardSize._12x12 }} x {{ boardSize._12x12 }}</option>
-      <option [value]="boardSize._15x15">{{ boardSize._15x15 }} x {{ boardSize._15x15 }}</option>
+      <option [value]="boardSize._15x15">{{ boardSize._15x15 }} x {{ boardSize._15x15 }}</option> -->
     </select>
     <!-- Password -->
     <label for="gameMode">Game Mode</label>
     <select name="gameMode" id="gameMode">
-      <option [value]="gameMode.SINGLE_PLAYER">{{ gameMode.SINGLE_PLAYER }}</option>
-      <option [value]="gameMode.MULTI_PLAYER">{{ gameMode.MULTI_PLAYER }}</option>
+      <!-- <option [value]="gameMode.SINGLE_PLAYER">{{ gameMode.SINGLE_PLAYER }}</option>
+      <option [value]="gameMode.MULTI_PLAYER">{{ gameMode.MULTI_PLAYER }}</option> -->
     </select>
     <!-- Password -->
     <label for="difficulty">Difficulty</label>
     <select name="difficulty" id="difficulty" >
-      <option [value]="difficulty.EASY">{{ difficulty.EASY }}</option>
+      <!-- <option [value]="difficulty.EASY">{{ difficulty.EASY }}</option>
       <option [value]="difficulty.MEDIUM">{{ difficulty.MEDIUM }}</option>
-      <option [value]="difficulty.HARD">{{ difficulty.HARD }}</option>
+      <option [value]="difficulty.HARD">{{ difficulty.HARD }}</option> -->
     </select>
     <!-- Log in -->
     <button type="submit" [disabled]="this.settingsForm.invalid">Save</button>

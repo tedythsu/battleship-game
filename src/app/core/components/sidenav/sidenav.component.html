@@ -25,35 +25,6 @@
           <span class="link-text">ABOUT</span>
         </a>
       </li>
-      @if (isLoggedIn) {
-        <li>
-          <a routerLink="login" (click)="logout()">
-            <img class="link-icon" src="assets/icons/logout.png" alt="logout">
-            <span class="link-text">LOGOUT</span>
-          </a>
-        </li>
-      } @else {
-        <li>
-          <a routerLink="login">
-            <img class="link-icon" src="assets/icons/login.png" alt="login">
-            <span class="link-text">LOGIN</span>
-          </a>
-        </li>
-      }
-      <!-- Weather Information -->
-      <li>
-        <a href="https://open-meteo.com/" target="_blank">
-          <img class="link-icon" src="assets/icons/weather-forecast.png" alt="weather-forecast">
-            <div class="weather-information">
-              @defer (when weatherData.generationtime_ms > 0) {
-              <span class="link-text">{{ weatherData.current.temperature_2m }}&deg;</span>
-              <span class="link-text">{{ weatherData.timezone }}</span>
-              } @placeholder (minimum 5000ms) {
-              <span class="weather-information__loading link-text">Loading...</span>
-              }
-            </div>
-        </a>
-      </li>
     </ul>
   </nav>
 </aside>
