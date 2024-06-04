@@ -50,7 +50,13 @@ enum GameMode {
 export class GamePageComponent implements OnInit {
 
   constructor(private datePipe: DatePipe, private alertService: AlertService, private router: Router) {
-    this.gameMode = this.router.getCurrentNavigation()?.extras.state!['gameMode'];
+    const isDirectAccessFromUrl = this.router.getCurrentNavigation()?.extras.replaceUrl;
+
+    if (isDirectAccessFromUrl) {
+      this.gameMode = GameMode.SINGLE_PLAYER;
+    } else {
+      this.gameMode = this.router.getCurrentNavigation()?.extras.state!['gameMode'];
+    }
   }
 
   ships: Array<Ship> = [
