@@ -1,4 +1,4 @@
-import { Component, OnInit, Signal, WritableSignal, computed, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -81,11 +81,11 @@ export class GamePageComponent implements OnInit {
   isAnyPlayerAllShipsSunk: Signal<boolean> = signal(false);
   isMissileExhausted: Signal<boolean> = signal(false);
   isGameComplete: Signal<boolean> = signal(false);
-  message: string = '';
+  // message: string = '';
 
-  get currentTimestamp(): string {
-    return `[${this.datePipe.transform(new Date(), 'HH:mm:ss')}]`
-  }
+  // get currentTimestamp(): string {
+  //   return `[${this.datePipe.transform(new Date(), 'HH:mm:ss')}]`
+  // }
 
   ngOnInit(): void {
     this.startGame(this.gameMode);
@@ -97,7 +97,7 @@ export class GamePageComponent implements OnInit {
     this.boards = this.generateGameBoard(numberOfPlayers);
     this.generateShipsOnGameBoard(numberOfPlayers);
     this.initializeGameData();
-    this.generateMessage('---GAME STARTED---');
+    // this.generateMessage('---GAME STARTED---');
     console.log('Player Information', this.players);
     console.log('Board Information', this.boards);
   }
@@ -122,7 +122,7 @@ export class GamePageComponent implements OnInit {
 
   /** Generates game boards for each player */
   private generateGameBoard(numberOfPlayers: number): Array<Array<BoardCell>> {
-    this.generateMessage('GENERATE GAME BOARD...');
+    // this.generateMessage('GENERATE GAME BOARD...');
 
     let boards: Array<Array<BoardCell>> = [];
 
@@ -153,7 +153,7 @@ export class GamePageComponent implements OnInit {
 
   /** Generates and places ships on the game boards for each player */
   private generateShipsOnGameBoard(boardCount: number): void {
-    this.generateMessage('GENERATE SHIPS...');
+    // this.generateMessage('GENERATE SHIPS...');
 
     for (let boardIndex = 0; boardIndex < boardCount; boardIndex++) {
       let randomLocation: number;
@@ -266,7 +266,7 @@ export class GamePageComponent implements OnInit {
   }
 
   private initializeGameData(): void {
-    this.generateMessage('INITIALIZE GAME DATA...');
+    // this.generateMessage('INITIALIZE GAME DATA...');
 
     this.isAnyPlayerAllShipsSunk = computed(() => {
       return !!this.players.find(player => (player.remainingShips() === 0));
@@ -290,30 +290,36 @@ export class GamePageComponent implements OnInit {
     }
 
     const target = this.boards[boardIndex][cellIndex];
+    const shipName = target.ship;
     target.hasBeenShot = true;
+    const isShipSunk = shipName ? this.checkIfShipSunk(boardIndex, shipName) : false;
 
-    if (target.ship) {
-      this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.HIT}`);
-      this.checkIfShipSunk(boardIndex, target.ship);
-    } else {
-      this.generateMessage(`FIRE AT [${target.location}] - ${ShotResult.MISSED}`);
+    if (isShipSunk) {
+      this.reduceShipCount(boardIndex);
     }
 
-    if (this.isGameComplete()) {
-      this.handleEndGameStatus(boardIndex);
-    }
+    this.handleGameStatus(boardIndex, isShipSunk, shipName);
   }
 
-  private handleEndGameStatus(playerIndex: number): void {
-    this.generateMessage('---GAME OVER---');
-    if (this.isAnyPlayerAllShipsSunk()) {
-      const winnerIndex = (playerIndex + 1) % this.players.length;
+  private handleGameStatus(playerIndex: number, isShipSunk: boolean, shipName?: string): void {
+    if (this.isGameComplete()) {
+      if (this.isAnyPlayerAllShipsSunk()) {
+        const winnerIndex = (playerIndex + 1) % this.players.length;
+        const message = (this.gameMode === GameMode.MULTI_PLAYER)
+        ? `${this.players[winnerIndex].playerName} WINS!`
+        : 'VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!';
+        this.alertService.showModal(message);
+      } else if (this.isMissileExhausted()) {
+        this.alertService.showModal('GAME OVER: OUT OF MISSILE');
+      }
+      return;
+    }
+
+    if (isShipSunk) {
       const message = (this.gameMode === GameMode.MULTI_PLAYER)
-      ? `${this.players[winnerIndex].playerName} WIN!`
-      : 'VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!';
+      ? `${this.players[playerIndex].playerName}'S [${shipName}] HAS BEEN SUNK!`
+      : `THE ENEMY'S [${shipName}] HAS BEEN SUNK!`;
       this.alertService.showModal(message);
-    } else if (this.isMissileExhausted()) {
-      this.alertService.showModal('GAME OVER: OUT OF MISSILE');
     }
   }
 
@@ -323,31 +329,27 @@ export class GamePageComponent implements OnInit {
     this.players[nextPlayerIndex].isTurn = false;
   }
 
-  private generateMessage(content: string): void {
-    this.message += `\n${this.currentTimestamp}: ${content}\n`;
+  // private generateMessage(content: string): void {
+  //   this.message += `\n${this.currentTimestamp}: ${content}\n`;
+  // }
+
+  private checkIfShipSunk(boardIndex: number, shipName: string): boolean {
+    return this.boards[boardIndex].find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
   }
 
-  private checkIfShipSunk(boardIndex: number, shipName: string): void {
-    const isShipSunk = this.boards[boardIndex].find(cell => cell.ship === shipName && !cell.hasBeenShot) === undefined;
-    if (isShipSunk) {
-      this.players[boardIndex].remainingShips.update(count => count - 1);
-      if (this.gameMode === GameMode.MULTI_PLAYER) {
-        this.generateMessage(`${this.players[boardIndex].playerName} [${shipName}] HAS BEEN SUNK!`);
-      } else {
-        this.generateMessage(`THE SHIP [${shipName}] HAS BEEN SUNK!`);
-      }
-    }
+  private reduceShipCount(boardIndex: number): void {
+    this.players[boardIndex].remainingShips.update(count => count - 1);
   }
 
   /** For testing purposes only. Toggles between single player and multi-player modes. */
-  public toggleGameMode(): void {
-    this.gameMode = this.gameMode === GameMode.SINGLE_PLAYER ? GameMode.MULTI_PLAYER : GameMode.SINGLE_PLAYER;
-    this.startGame(this.gameMode);
-  }
+  // public toggleGameMode(): void {
+  //   this.gameMode = this.gameMode === GameMode.SINGLE_PLAYER ? GameMode.MULTI_PLAYER : GameMode.SINGLE_PLAYER;
+  //   this.startGame(this.gameMode);
+  // }
 
   /** For testing purposes only. Clears the current message. */
-  public clearMessage(): void {
-    this.message = '';
-  }
+  // public clearMessage(): void {
+  //   this.message = '';
+  // }
 
 }
