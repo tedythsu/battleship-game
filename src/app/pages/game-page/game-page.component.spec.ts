@@ -27,12 +27,20 @@ describe('GamePageComponent', () => {
         // Test initialization of game mode, ensuring it defaults correctly for single player mode
       });
 
-      xit('should generate players and game boards for single player mode', () => {
-        // Test logic for generating players and game boards in single player mode
+      xit('should generate players for single player mode', () => {
+        // Test logic for generating players in single player mode
       });
 
-      xit('should initialize remaining ships and missile counts for players in single player mode', () => {
-        // Test initialization of remaining ships and missile counts for players in single player mode
+      xit('should generate game boards for single player mode', () => {
+        // Test logic for generating game boards in single player mode
+      });
+
+      xit('should initialize remaining ships for players in single player mode', () => {
+        // Test initialization of remaining ships for players in single player mode
+      });
+
+      xit('should initialize missile counts for players in single player mode', () => {
+        // Test initialization of missile counts for players in single player mode
       });
     });
 
@@ -41,12 +49,20 @@ describe('GamePageComponent', () => {
         // Test initialization of game mode, ensuring it defaults correctly for multiplayer mode
       });
 
-      xit('should generate players and game boards for multiplayer mode', () => {
-        // Test logic for generating players and game boards in multiplayer mode
+      xit('should generate players for multiplayer mode', () => {
+        // Test logic for generating players in multiplayer mode
       });
 
-      xit('should initialize remaining ships and missile counts for players in multiplayer mode', () => {
-        // Test initialization of remaining ships and missile counts for players in multiplayer mode
+      xit('should generate game boards for multiplayer mode', () => {
+        // Test logic for generating game boards in multiplayer mode
+      });
+
+      xit('should initialize remaining ships for players in multiplayer mode', () => {
+        // Test initialization of remaining ships for players in multiplayer mode
+      });
+
+      xit('should initialize missile counts for players in multiplayer mode', () => {
+        // Test initialization of missile counts for players in multiplayer mode
       });
     });
   });
