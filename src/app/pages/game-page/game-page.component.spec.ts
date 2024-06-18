@@ -97,7 +97,11 @@ describe('GamePageComponent', () => {
       });
 
       xit('should handle game status correctly in single player mode', () => {
-        // Test handling of game status after the game ends in single player mode, including player victory and game over scenarios
+        // Test handling of game status after the game ends in single player mode
+      });
+
+      xit('should correctly decrease player missile count after shooting in single player mode', () => {
+        // Test whether player missile count is correctly decreased after shooting in single player mode
       });
     });
 
@@ -111,37 +115,11 @@ describe('GamePageComponent', () => {
       });
 
       xit('should handle game status correctly in multiplayer mode', () => {
-        // Test handling of game status after the game ends in multiplayer mode, including player victory and game over scenarios
-      });
-    });
-  });
-
-  describe('Game Operations', () => {
-    describe('Single Player Mode', () => {
-      xit('should execute shooting correctly in single player mode', () => {
-        // Test shooting functionality, including hit and miss scenarios in single player mode
+        // Test handling of game status after the game ends in multiplayer mode
       });
 
-      xit('should correctly check if a ship is sunk in single player mode', () => {
-        // Test logic for checking if a ship is correctly sunk in single player mode
-      });
-
-      xit('should handle game status correctly in single player mode', () => {
-        // Test handling of game status after the game ends in single player mode, including player victory and game over scenarios
-      });
-    });
-
-    describe('Multiplayer Mode', () => {
-      xit('should execute shooting correctly in multiplayer mode', () => {
-        // Test shooting functionality, including hit and miss scenarios in multiplayer mode
-      });
-
-      xit('should correctly check if a ship is sunk in multiplayer mode', () => {
-        // Test logic for checking if a ship is correctly sunk in multiplayer mode
-      });
-
-      xit('should handle game status correctly in multiplayer mode', () => {
-        // Test handling of game status after the game ends in multiplayer mode, including player victory and game over scenarios
+      xit('should correctly switch player turns after shooting in multiplayer mode', () => {
+        // Test whether player turns are correctly switched after shooting in multiplayer mode
       });
     });
   });
