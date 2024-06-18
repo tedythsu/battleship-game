@@ -34,7 +34,7 @@ enum ShotResult {
   MISSED = 'MISSED!'
 }
 
-enum GameMode {
+export enum GameMode {
   SINGLE_PLAYER = 'Single Player',
   MULTI_PLAYER = 'Multi Player'
 }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GamePageComponent } from './game-page.component';
+import { GameMode, GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
   let component: GamePageComponent;
@@ -11,7 +11,7 @@ describe('GamePageComponent', () => {
       imports: [GamePageComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(GamePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -23,24 +23,43 @@ describe('GamePageComponent', () => {
 
   describe('Initialization', () => {
     describe('Single Player Mode', () => {
+      beforeEach(() => {
+        // Arrange
+        component.gameMode = GameMode.SINGLE_PLAYER;
+        // Act
+        component.startGame(component.gameMode);
+      })
+
       xit('should initialize game mode correctly for single player mode', () => {
         // Test initialization of game mode, ensuring it defaults correctly for single player mode
       });
 
-      xit('should generate players for single player mode', () => {
-        // Test logic for generating players in single player mode
+      it('should generate players correctly for single player mode', () => {
+        const actualPlayersCount: number = component.players.length;
+        const expectedPlayersCount: number = 1;
+        // Assert
+        expect(actualPlayersCount).toBe(expectedPlayersCount);
       });
 
-      xit('should generate game boards for single player mode', () => {
-        // Test logic for generating game boards in single player mode
+      it('should generate game boards correctly for single player mode', () => {
+        const actualBoardsCount: number = component.boards.length;
+        const expectedBoardsCount: number = 1;
+        // Assert
+        expect(actualBoardsCount).toBe(expectedBoardsCount);
       });
 
-      xit('should initialize remaining ships for players in single player mode', () => {
-        // Test initialization of remaining ships for players in single player mode
+      it('should initialize remaining ships for the player in single player mode', () => {
+        const actualShipsCount: number = component.players[0].remainingShips();
+        const expectedShipsCount: number = component.ships.length;
+        // Assert
+        expect(actualShipsCount).toBe(expectedShipsCount);
       });
 
-      xit('should initialize missile counts for players in single player mode', () => {
-        // Test initialization of missile counts for players in single player mode
+      it('should initialize missile counts for the player in single player mode', () => {
+        const actualMissilesCount: number = component.players[0].missileCount();
+        const expectedMissilesCount: number = 30;
+        // Assert
+        expect(actualMissilesCount).toBe(expectedMissilesCount);
       });
     });
 
