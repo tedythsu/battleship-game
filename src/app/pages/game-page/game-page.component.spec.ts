@@ -49,14 +49,16 @@ describe('GamePageComponent', () => {
       });
 
       it('should initialize remaining ships for the player in single player mode', () => {
-        const actualShipsCount: number = component.players[0].remainingShips();
+        const playerOneIndex = 0;
+        const actualShipsCount: number = component.players[playerOneIndex].remainingShips();
         const expectedShipsCount: number = component.ships.length;
         // Assert
         expect(actualShipsCount).toBe(expectedShipsCount);
       });
 
       it('should initialize missile counts for the player in single player mode', () => {
-        const actualMissilesCount: number = component.players[0].missileCount();
+        const playerOneIndex = 0;
+        const actualMissilesCount: number = component.players[playerOneIndex].missileCount();
         const expectedMissilesCount: number = 30;
         // Assert
         expect(actualMissilesCount).toBe(expectedMissilesCount);
@@ -87,12 +89,15 @@ describe('GamePageComponent', () => {
         expect(actualBoardsCount).toBe(expectedBoardsCount);
       });
 
-      xit('should initialize remaining ships for players in multiplayer mode', () => {
-        // Test initialization of remaining ships for players in multiplayer mode
-      });
-
-      xit('should initialize missile counts for players in multiplayer mode', () => {
-        // Test initialization of missile counts for players in multiplayer mode
+      it('should initialize remaining ships for players in multiplayer mode', () => {
+        const playerOneIndex = 0;
+        const playerTwoIndex = 1;
+        const actualPlayerOneShipsCount: number = component.players[playerOneIndex].remainingShips();
+        const actualPlayerTwoShipsCount: number = component.players[playerTwoIndex].remainingShips();
+        const expectedShipsCount: number = component.ships.length;
+        // Assert
+        expect(actualPlayerOneShipsCount).toBe(expectedShipsCount);
+        expect(actualPlayerTwoShipsCount).toBe(expectedShipsCount);
       });
     });
   });
@@ -116,8 +121,19 @@ describe('GamePageComponent', () => {
         expect(cellHasBeenShot).toBeTrue();
       });
 
-      xit('should correctly check if a ship is sunk in single player mode', () => {
-        // Test logic for checking if a ship is correctly sunk in single player mode
+      it('should correctly check if a ship is sunk in single player mode', () => {
+        // Arrange
+        const boardIndex = 0;
+        const cellIndex = 0;
+        const mockShip = 'mockShip';
+        const playerOneIndex = 0;
+        component.boards[boardIndex][cellIndex].ship = mockShip;
+        // Act
+        component.shoot(boardIndex, cellIndex);
+        // Assert
+        const actualRemainingShips = component.players[playerOneIndex].remainingShips();
+        const expectedRemainingShips = component.ships.length - 1;
+        expect(actualRemainingShips).toBe(expectedRemainingShips);
       });
 
       it('should handle game status correctly when all enemy ships are sunk in single player mode', () => {
@@ -126,8 +142,10 @@ describe('GamePageComponent', () => {
         alertService = TestBed.inject(AlertService);
         spyOn(alertService, 'showModal');
         component.isAnyPlayerAllShipsSunk = signal(true);
+        const boardIndex = 0;
+        const cellIndex = 0;
         // Act
-        component.shoot(0, 0);
+        component.shoot(boardIndex, cellIndex);
         // Assert
         const expectedMessage = 'VICTORY! ALL ENEMY SHIPS HAVE BEEN SUNK!';
         expect(alertService.showModal).toHaveBeenCalledWith(expectedMessage);
@@ -135,12 +153,16 @@ describe('GamePageComponent', () => {
 
       it('should handle game status correctly when player runs out of missiles in single player mode', () => {
         // Arrange
+        const playerOneIndex = 0;
+        const boardIndex = 0;
+        const cellIndex = 0;
+        const initialMissilesCount = 1;
         let alertService: AlertService;
         alertService = TestBed.inject(AlertService);
         spyOn(alertService, 'showModal');
-        component.players[0].missileCount.set(1);
+        component.players[playerOneIndex].missileCount.set(initialMissilesCount);
         // Act
-        component.shoot(0, 0);
+        component.shoot(boardIndex, cellIndex);
         // Assert
         const expectedMessage = 'GAME OVER: OUT OF MISSILE';
         expect(alertService.showModal).toHaveBeenCalledWith(expectedMessage);
@@ -148,11 +170,14 @@ describe('GamePageComponent', () => {
 
       it('should correctly decrease player missile count after shooting in single player mode', () => {
         // Arrange
-        const initialMissilesCount: number = component.players[0].missileCount();
+        const playerOneIndex = 0;
+        const boardIndex = 0;
+        const cellIndex = 0;
+        const initialMissilesCount: number = component.players[playerOneIndex].missileCount();
         // Act
-        component.shoot(0, 0);
+        component.shoot(boardIndex, cellIndex);
         // Assert
-        const updatedMissilesCount: number = component.players[0].missileCount();
+        const updatedMissilesCount: number = component.players[playerOneIndex].missileCount();
         expect(updatedMissilesCount).toBe(initialMissilesCount - 1);
       });
     });
@@ -175,12 +200,53 @@ describe('GamePageComponent', () => {
         expect(cellHasBeenShot).toBeTrue();
       });
 
-      xit('should correctly check if a ship is sunk in multiplayer mode', () => {
-        // Test logic for checking if a ship is correctly sunk in multiplayer mode
+      it('should correctly check if a ship is sunk in multiplayer mode', () => {
+        // Arrange
+        const boardIndex = 1;
+        const cellIndex = 0;
+        const mockShip = 'mockShip';
+        const playerTwoIndex = 1;
+        component.boards[boardIndex][cellIndex].ship = mockShip;
+        // Act
+        component.shoot(boardIndex, cellIndex);
+        // Assert
+        const actualRemainingShips = component.players[playerTwoIndex].remainingShips();
+        const expectedRemainingShips = component.ships.length - 1;
+        expect(actualRemainingShips).toBe(expectedRemainingShips);
       });
 
-      xit('should handle game status correctly when all ships of one player are sunk in multiplayer mode', () => {
-        // Test game status handling when all ships of one player are sunk
+      it('should handle game status correctly when all ships of player 1 are sunk in multiplayer mode', () => {
+        // Arrange
+        const playerOneIndex = 0;
+        const boardIndex = 0;
+        const cellIndex = 0;
+        const initialRemainingShipsCount = 0;
+        let alertService: AlertService;
+        alertService = TestBed.inject(AlertService);
+        spyOn(alertService, 'showModal');
+        component.players[playerOneIndex].remainingShips.set(initialRemainingShipsCount);
+        // Act
+        component.shoot(boardIndex, cellIndex);
+        // Assert
+        const expectedMessage = 'PLAYER 2 WINS!';
+        expect(alertService.showModal).toHaveBeenCalledWith(expectedMessage);
+      });
+
+      it('should handle game status correctly when all ships of player 2 are sunk in multiplayer mode', () => {
+        // Arrange
+        const playerTwoIndex = 1;
+        const boardIndex = 1;
+        const cellIndex = 0;
+        const initialRemainingShipsCount = 0;
+        let alertService: AlertService;
+        alertService = TestBed.inject(AlertService);
+        spyOn(alertService, 'showModal');
+        component.players[playerTwoIndex].remainingShips.set(initialRemainingShipsCount);
+        // Act
+        component.shoot(boardIndex, cellIndex);
+        // Assert
+        const expectedMessage = 'PLAYER 1 WINS!';
+        expect(alertService.showModal).toHaveBeenCalledWith(expectedMessage);
       });
 
       it('should correctly switch player turns from player 1 to player 2 after shooting in multiplayer mode', () => {
@@ -210,7 +276,6 @@ describe('GamePageComponent', () => {
         expect(component.players[playerOneIndex].isTurn).toBeTrue();
         expect(component.players[playerTwoIndex].isTurn).toBeFalse();
       });
-
     });
   });
 });
