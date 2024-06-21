@@ -1,6 +1,5 @@
 import { Component, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { Router } from '@angular/router';
 
@@ -89,6 +88,10 @@ export class GamePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.startGame(this.gameMode);
+  }
+
+  public exitGame(): void {
+    this.router.navigate([""]);
   }
 
   public startGame(gameMode: string): void {
