@@ -1,13 +1,19 @@
 <main class="main-container">
-  <article class="main-container__header">
-    <h1>SELECT A GAME MODE</h1>
-    <ul class="game-modes">
-      <li class="common-btn" (click)="navigateToGame('Single Player')">
-        SOLO
+  <header>
+    <h2>SELECT A GAME MODE</h2>
+  </header>
+  <section>
+    <ul class="game-mode-list">
+      <li class="game-mode-list__item">
+        <button class="common-btn" (click)="navigateToGame('Single Player')">
+          SOLO
+        </button>
       </li>
-      <li class="common-btn" (click)="navigateToGame('Multi Player')">
-        2-PLAYER MODE
+      <li class="game-mode-list__item">
+        <button class="common-btn" (click)="navigateToGame('Multi Player')">
+          2-PLAYER MODE
+        </button>
       </li>
     </ul>
-  </article>
+  </section>
 </main>
