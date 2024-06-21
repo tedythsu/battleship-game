@@ -1,64 +1,71 @@
-  <div class="boards">
-    @for (board of boards; track board; let boardIndex = $index) {
-      <div class="board"
-        [ngStyle]="{
-          'width': 'calc(7 * ' + boardColumns() + 'vw)',
-          'max-width': 'calc(50 * ' + boardColumns() + 'px)',
-          'max-height': 'calc(50 * ' + boardRows() + 'px)'
-          }"
-        [ngClass]="{
-          'board--disable': isGameComplete() ||
-          (gameMode === 'Multi Player' && players[boardIndex].isTurn)
-          }">
-        <div class="board__player-label">{{ players[boardIndex].playerName }}
-          @if (gameMode === 'Single Player') {
-            <span> [MISSILE COUNT: {{ players[boardIndex].missileCount() }}]</span>
-          }
-        </div>
-        <div class="board__coordinates board__coordinates--numbers"
+  @defer () {
+    <div class="boards">
+      @for (board of boards; track board; let boardIndex = $index) {
+        <div class="board"
           [ngStyle]="{
-            'max-width': 'calc(50 * ' + boardColumns() + 'px)'
-            }">
-          @for (column of [].constructor(boardColumns()); track $index) {
-            <div>{{ $index + 1 }}</div>
-          }
-        </div>
-        <div class="board__coordinates board__coordinates--letters"
-          [ngStyle]="{
+            'width': 'calc(7 * ' + boardColumns() + 'vw)',
+            'max-width': 'calc(50 * ' + boardColumns() + 'px)',
             'max-height': 'calc(50 * ' + boardRows() + 'px)'
-            }">
-          @for (row of [].constructor(boardRows()); track $index) {
-            <div>{{ alphabetLetters[$index] }}</div>
-          }
-        </div>
-        @for (cell of board; track cell; let cellIndex = $index) {
-          <div class="board__cell"
-            [ngStyle]="{
-            'width': 'calc(100% / ' + boardColumns() + ')',
             }"
-            [ngClass]="{
-            'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
-            'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
-            'board__cell--ship': cell.ship
-            }" (click)="shoot(boardIndex, cellIndex)">
+          [ngClass]="{
+            'board--disable': isGameComplete() ||
+            (gameMode === 'Multi Player' && players[boardIndex].isTurn)
+            }">
+          <div class="board__player-label">{{ players[boardIndex].playerName }}
+            @if (gameMode === 'Single Player') {
+              <span> [MISSILE COUNT: {{ players[boardIndex].missileCount() }}]</span>
+            }
           </div>
-        }
-        <div class="board__ships-count">SHIPS LEFT: {{ players[boardIndex].remainingShips() }}</div>
-      </div>
-    }
-  </div>
-    <!-- <div class="game-info">
-      <div class="game-info__message">{{ message }}</div>
-    </div> -->
+          <div class="board__coordinates board__coordinates--numbers"
+            [ngStyle]="{
+              'max-width': 'calc(50 * ' + boardColumns() + 'px)'
+              }">
+            @for (column of [].constructor(boardColumns()); track $index) {
+              <div>{{ $index + 1 }}</div>
+            }
+          </div>
+          <div class="board__coordinates board__coordinates--letters"
+            [ngStyle]="{
+              'max-height': 'calc(50 * ' + boardRows() + 'px)'
+              }">
+            @for (row of [].constructor(boardRows()); track $index) {
+              <div>{{ alphabetLetters[$index] }}</div>
+            }
+          </div>
+          @for (cell of board; track cell; let cellIndex = $index) {
+            <div class="board__cell"
+              [ngStyle]="{
+              'width': 'calc(100% / ' + boardColumns() + ')',
+              }"
+              [ngClass]="{
+              'board__cell--shipwreck': cell.hasBeenShot && cell.ship,
+              'board__cell--has-been-shot': cell.hasBeenShot && !cell.ship,
+              'board__cell--ship': cell.ship
+              }" (click)="shoot(boardIndex, cellIndex)">
+            </div>
+          }
+          <div class="board__ships-count">SHIPS LEFT: {{ players[boardIndex].remainingShips() }}</div>
+        </div>
+      }
+    </div>
+
+    <div class="operation-btn-container">
+      <button class="common-btn" role="button" (click)="startGame(gameMode)">
+        <span class="text">RESTART</span>
+      </button>
+      <button class="common-btn" role="button" (click)="exitGame()">
+        <span class="text">EXIT GAME</span>
+      </button>
+    </div>
+  } @placeholder (minimum 3000ms) {
+    <div class="loading-box-container">
+      <div class="loading-box"></div>
+    </div>
+  }
+
+<!-- <div class="game-info">
+  <div class="game-info__message">{{ message }}</div>
+</div> -->
 
 <!-- <button (click)="toggleGameMode()">Change Game Mode</button>
 <button (click)="clearMessage()">Clear Message</button> -->
-
-<div class="start-button-container">
-  <button class="common-btn" role="button" (click)="startGame(gameMode)">
-    <span class="text">RESTART</span>
-  </button>
-  <button class="common-btn" role="button" (click)="exitGame()">
-    <span class="text">EXIT GAME</span>
-  </button>
-</div>
