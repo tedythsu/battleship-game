@@ -1,34 +1,13 @@
-<!-- <article>
-  <section class="welcome-text">
-    <h2>
-      Ahoy, Admiral!
-    </h2>
-    <p>
-      Welcome to Battleship - the ultimate naval combat experience!
-      Command your fleet, strategically position your ships, and engage in thrilling battles across the open seas. Outmaneuver your rivals, dominate the waves, and emerge victorious as a master tactician.
-    </p>
-  </section>
-  <figure class="welcome-image">
-    <img src="assets/images/battleship-drift.gif" />
-    <small>
-      Image: Taken from the movie <em>Battleship (2012)</em>
-    </small>
-  </figure>
-</article> -->
-
-<main>
-  <article>
-    <figure class="welcome-image">
-      <img src="assets/images/welcome-img.gif" />
-    </figure>
+<main class="main-container">
+  <article class="main-container__header">
+    <h1>SELECT A GAME MODE</h1>
     <ul class="game-modes">
-      <li (click)="navigateToGame('Single Player')">
-        1 Player Game
+      <li class="game-modes__button" (click)="navigateToGame('Single Player')">
+        SOLO
       </li>
-      <li (click)="navigateToGame('Multi Player')">
-        2 Players Game
+      <li class="game-modes__button" (click)="navigateToGame('Multi Player')">
+        2-PLAYER MODE
       </li>
     </ul>
   </article>
 </main>
-
