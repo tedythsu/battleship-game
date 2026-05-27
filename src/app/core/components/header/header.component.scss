@@ -4,20 +4,25 @@
   justify-content: center;
   height: var(--header-height);
   box-sizing: border-box;
-  padding: 1em;
-  position: relative;
-  color: var(--text-color);
   background-color: var(--bg-color);
-  transition: all 0.25s ease;
   z-index: 10;
+  position: relative;
 
-  border-image: linear-gradient(to left,
-  var(--bg-color) 1%,
-  #8EABC9 50%,
-  var(--bg-color) 100%) 0 0 100% 0/0 0 3px 0 stretch;
+  border-image: linear-gradient(
+    to left,
+    var(--bg-color) 0%,
+    oklch(0.60 0.04 220) 50%,
+    var(--bg-color) 100%
+  ) 0 0 100% 0 / 0 0 1px 0 stretch;
 
-  &__image {
-    width: 90%;
-    max-width: 325px;
+  &__title {
+    font-family: 'Beon', sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: 10px;
+    text-indent: 10px;
+    color: oklch(0.94 0.006 220);
+    text-transform: uppercase;
+    user-select: none;
   }
 }
