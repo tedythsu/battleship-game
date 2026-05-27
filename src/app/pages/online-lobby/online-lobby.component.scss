@@ -18,13 +18,13 @@
   font-size: 10px;
   letter-spacing: 3px;
   text-indent: 3px;
-  color: var(--c-text-muted);
+  color: var(--c-text-dim);
   text-transform: uppercase;
 }
 
 .field-input {
   background: transparent;
-  border: 1px solid var(--c-border-dim);
+  border: 1px solid var(--c-border);
   padding: var(--sp-3) var(--sp-3);
   color: var(--c-text);
   font-family: 'Beon', sans-serif;
@@ -47,7 +47,7 @@
 
 .divider {
   text-align: center;
-  color: var(--c-text-muted);
+  color: var(--c-text-dim);
   font-size: 10px;
   letter-spacing: 3px;
   text-indent: 3px;
@@ -70,7 +70,7 @@
   align-items: center;
   gap: var(--sp-4);
   padding: var(--sp-6) var(--sp-7);
-  border: 1px solid var(--c-border-dim);
+  border: 1px solid var(--c-border);
 }
 
 .room-code {
@@ -83,7 +83,7 @@
 }
 
 .waiting-text {
-  color: var(--c-text-muted);
+  color: var(--c-text-dim);
   font-size: 10px;
   letter-spacing: 3px;
   text-indent: 3px;
@@ -112,8 +112,8 @@
 /* ── Secondary button ── */
 .back-btn {
   background: transparent;
-  border: 1px solid var(--c-border-dim);
-  color: var(--c-text-muted);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-dim);
   padding: var(--sp-2) var(--sp-5);
   min-height: 36px;
   cursor: pointer;

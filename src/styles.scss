@@ -13,12 +13,12 @@ body {
   /* ── Color tokens (oklch, hue 220 = blue-steel) ── */
   --c-bg:         oklch(0.04 0.008 220);
   --c-surface:    oklch(0.09 0.010 220);
-  --c-border:     oklch(0.22 0.012 220);
-  --c-border-dim: oklch(0.14 0.008 220);
+  --c-border:     oklch(0.28 0.012 220);
+  --c-border-dim: oklch(0.20 0.010 220);
 
   --c-text:       oklch(0.94 0.006 220);
-  --c-text-dim:   oklch(0.52 0.010 220);
-  --c-text-muted: oklch(0.34 0.006 220);
+  --c-text-dim:   oklch(0.58 0.010 220);
+  --c-text-muted: oklch(0.46 0.008 220);
 
   --c-accent:     oklch(0.60 0.042 220);
   --c-accent-sub: oklch(0.44 0.035 220);
