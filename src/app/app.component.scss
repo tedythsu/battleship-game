@@ -1,17 +1,22 @@
-.page-container {
-  display: flex;
-  flex-direction: column;
+app-header,
+app-footer {
+  display: block;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+app-header { top: 0; }
+app-footer  { bottom: 0; }
+
+.page-content {
+  position: fixed;
+  top: var(--header-height);
+  bottom: var(--footer-height);
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  background: var(--c-bg);
   color: var(--c-text);
-  background-color: var(--c-bg);
-
-  .content-container {
-    height: calc(100vh - var(--header-height));
-    flex-grow: 1;
-    overflow-y: auto;
-
-    &__main {
-      padding: var(--sp-6);
-      min-height: calc(100% - var(--header-height) - var(--footer-height));
-    }
-  }
 }

@@ -94,7 +94,7 @@
 
 /* ── Loading ── */
 .loading-box-container {
-  min-height: calc(100vh - var(--header-height) - var(--footer-height) - 4rem);
+  min-height: calc(100% - 4rem);
   display: flex;
   justify-content: center;
   align-items: center;
