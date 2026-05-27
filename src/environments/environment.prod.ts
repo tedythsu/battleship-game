@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  socketServerUrl: 'https://YOUR-APP.onrender.com',
+  socketServerUrl: 'https://battleship-game-do3l.onrender.com',
 };
