@@ -27,6 +27,7 @@
             [class.board__cell--shake]="shakeMyBoard() === i">
           </div>
         }
+        <div class="board__ships-count">SHIPS LEFT: {{ myShipsLeft() }}</div>
       </div>
     }
 
@@ -47,6 +48,7 @@
             (click)="fire(i)">
           </div>
         }
+        <div class="board__ships-count">SHIPS LEFT: {{ opponentShipsLeft() }}</div>
       </div>
     }
   </div>

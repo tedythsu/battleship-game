@@ -46,6 +46,15 @@
     &--atk { color: #f7a84f; }
   }
 
+  &__ships-count {
+    pointer-events: none;
+    position: absolute;
+    bottom: -26px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #B33A3A;
+  }
+
   &__coordinates {
     position: absolute;
     display: flex;

@@ -29,6 +29,8 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   announcement: WritableSignal<Announcement | null> = signal(null);
   shakeMyBoard: WritableSignal<number | null> = signal(null);
   shakeAttackBoard: WritableSignal<number | null> = signal(null);
+  myShipsLeft: WritableSignal<number> = signal(0);
+  opponentShipsLeft: WritableSignal<number> = signal(0);
 
   myNickname = '';
   opponentNickname = '';
@@ -67,6 +69,9 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         hasBeenShot: false,
       }))
     );
+    const totalShips = new Set(this.myBoard().map(c => c.ship).filter(Boolean)).size;
+    this.myShipsLeft.set(totalShips);
+    this.opponentShipsLeft.set(totalShips);
 
     this.socketService.on<{ socketId: string; timeLimit: number }>('turn_start', ({ socketId, timeLimit }) => {
       if (this.gameOver()) return;
@@ -105,6 +110,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
           this.shakeAttackBoard.set(data.cellIndex);
           setTimeout(() => this.shakeAttackBoard.set(null), 350);
         }
+        if (data.shipSunk) this.opponentShipsLeft.update(n => n - 1);
         // Keep ATTACK BOARD shown 2s so user sees the result, then switch to MY BOARD
         this.clearResultTimeout();
         this.resultTimeout = setTimeout(() => {
@@ -119,6 +125,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
           this.shakeMyBoard.set(data.cellIndex);
           setTimeout(() => this.shakeMyBoard.set(null), 350);
         }
+        if (data.shipSunk) this.myShipsLeft.update(n => n - 1);
         // Flag: next turn_start (my turn) should delay before showing ATTACK BOARD
         this.defenderNeedsDelay = true;
       }
