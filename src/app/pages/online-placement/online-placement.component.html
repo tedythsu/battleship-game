@@ -41,6 +41,7 @@
         }
         <button class="ctrl-btn" [disabled]="!selected" (click)="rotate()">↻ {{ dir }}</button>
         <button class="ctrl-btn" (click)="randomize()">RANDOM</button>
+        <button class="ctrl-btn" (click)="reset()">RESET</button>
         <button class="common-btn confirm-btn" [disabled]="!allPlaced" (click)="confirm()">
           {{ allPlaced ? 'CONFIRM' : shipsRemaining + ' LEFT' }}
         </button>

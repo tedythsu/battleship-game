@@ -111,34 +111,42 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
 
   randomize(): void {
     const dirs = [Dir.Right, Dir.Down, Dir.Left, Dir.Up];
-    const b: BoardCell[] = Array.from({ length: this.N * this.N }, (_, i) => ({
+    const emptyBoard = (): BoardCell[] => Array.from({ length: this.N * this.N }, (_, i) => ({
       location: this.letters[Math.floor(i / this.N)] + ((i % this.N) + 1),
       hasBeenShot: false,
     }));
-    this.ships.forEach(ship => {
-      ship.placed.set(false);
-      let ok = false, tries = 0;
-      while (!ok && tries++ < 200) {
-        const start = Math.floor(Math.random() * b.length);
-        const dir = dirs[Math.floor(Math.random() * 4)];
-        const idxs = this.indexes(start, dir, ship.size);
-        const total = this.N * this.N;
-        const noOob = idxs.every(i => i >= 0 && i < total);
-        const noOverlap = idxs.every(i => !b[i].ship);
-        const noWrap = [Dir.Right, Dir.Left].includes(dir)
-          ? idxs.map(i => Math.floor(i / this.N)).every((r, _, a) => r === a[0])
-          : true;
-        if (noOob && noOverlap && noWrap) {
-          idxs.forEach(i => b[i] = { ...b[i], ship: ship.name });
-          ship.placed.set(true);
-          ok = true;
+
+    let b: BoardCell[] = [];
+    let success = false;
+    while (!success) {
+      b = emptyBoard();
+      success = this.ships.every(ship => {
+        for (let tries = 0; tries < 200; tries++) {
+          const start = Math.floor(Math.random() * b.length);
+          const dir = dirs[Math.floor(Math.random() * 4)];
+          const idxs = this.indexes(start, dir, ship.size);
+          const total = this.N * this.N;
+          const noOob = idxs.every(i => i >= 0 && i < total);
+          const noOverlap = idxs.every(i => !b[i].ship);
+          const noWrap = [Dir.Right, Dir.Left].includes(dir)
+            ? idxs.map(i => Math.floor(i / this.N)).every((r, _, a) => r === a[0])
+            : true;
+          if (noOob && noOverlap && noWrap) {
+            idxs.forEach(i => b[i] = { ...b[i], ship: ship.name });
+            return true;
+          }
         }
-      }
-    });
+        return false;
+      });
+    }
+
+    this.ships.forEach(s => s.placed.set(true));
     this.board.set(b);
     this.selected = null;
     this.hovered = [];
   }
+
+  reset(): void { this.initBoard(); }
 
   confirm(): void {
     if (!this.allPlaced) return;
