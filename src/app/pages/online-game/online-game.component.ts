@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { SocketService, BoardCell } from 'src/app/core/services/socket.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 
+type AnnouncementType = 'hit' | 'miss' | 'sunk';
+interface Announcement { text: string; type: AnnouncementType; }
+
 @Component({
   selector: 'app-online-game',
   standalone: true,
@@ -21,14 +24,17 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   isMyTurn: WritableSignal<boolean> = signal(false);
   timeLeft: WritableSignal<number> = signal(30);
   gameOver: WritableSignal<boolean> = signal(false);
-  // Controls which board is shown on mobile: true = ATTACK BOARD, false = MY BOARD
   showAttack: WritableSignal<boolean> = signal(false);
+  announcement: WritableSignal<Announcement | null> = signal(null);
 
   myNickname = '';
   opponentNickname = '';
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private resultTimeout: ReturnType<typeof setTimeout> | null = null;
+  private announcementTimeout: ReturnType<typeof setTimeout> | null = null;
+  // Flag: opponent just fired, so delay switching to ATTACK BOARD on next turn_start
+  private defenderNeedsDelay = false;
 
   constructor(
     private socketService: SocketService,
@@ -59,9 +65,17 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
       const mine = socketId === this.socketService.socketId;
       this.isMyTurn.set(mine);
       if (mine) {
-        // My turn starts — clear any pending result delay and show attack board
         this.clearResultTimeout();
-        this.showAttack.set(true);
+        if (this.defenderNeedsDelay) {
+          // Opponent just fired — keep MY BOARD visible 2s so user sees the result
+          this.defenderNeedsDelay = false;
+          this.resultTimeout = setTimeout(() => {
+            this.showAttack.set(true);
+            this.resultTimeout = null;
+          }, 2000);
+        } else {
+          this.showAttack.set(true);
+        }
       }
       this.startTimer(timeLimit);
     });
@@ -70,11 +84,16 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
       shooterSocketId: string; cellIndex: number; hit: boolean;
       shipName: string | null; shipSunk: boolean; gameOver: boolean;
     }>('shot_result', (data) => {
-      if (data.shooterSocketId === this.socketService.socketId) {
+      const isMine = data.shooterSocketId === this.socketService.socketId;
+      const type: AnnouncementType = data.shipSunk ? 'sunk' : data.hit ? 'hit' : 'miss';
+      const text = data.shipSunk ? 'SUNK!' : data.hit ? 'HIT!' : 'MISSED!';
+      this.showAnnouncement(text, type);
+
+      if (isMine) {
         const b = [...this.attackBoard()];
         b[data.cellIndex] = { ...b[data.cellIndex], hasBeenShot: true, ship: data.hit ? (data.shipName ?? 'hit') : undefined };
         this.attackBoard.set(b);
-        // Keep ATTACK BOARD visible for 2s so user sees the hit/miss result
+        // Keep ATTACK BOARD shown 2s so user sees the result, then switch to MY BOARD
         this.clearResultTimeout();
         this.resultTimeout = setTimeout(() => {
           if (!this.isMyTurn()) this.showAttack.set(false);
@@ -84,6 +103,8 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         const b = [...this.myBoard()];
         b[data.cellIndex] = { ...b[data.cellIndex], hasBeenShot: true };
         this.myBoard.set(b);
+        // Flag: next turn_start (my turn) should delay before showing ATTACK BOARD
+        this.defenderNeedsDelay = true;
       }
     });
 
@@ -105,6 +126,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopTimer();
     this.clearResultTimeout();
+    this.clearAnnouncementTimeout();
     ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected'].forEach(e => this.socketService.off(e));
   }
 
@@ -113,12 +135,20 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.socketService.emit('fire', { cellIndex: idx });
     this.isMyTurn.set(false);
     this.stopTimer();
-    // Keep attack board shown — shot_result handler will start the 2s delay
   }
 
   exitGame(): void {
     this.socketService.disconnect();
     this.router.navigate(['']);
+  }
+
+  private showAnnouncement(text: string, type: AnnouncementType): void {
+    this.clearAnnouncementTimeout();
+    this.announcement.set({ text, type });
+    this.announcementTimeout = setTimeout(() => {
+      this.announcement.set(null);
+      this.announcementTimeout = null;
+    }, 1800);
   }
 
   private startTimer(seconds: number): void {
@@ -141,5 +171,9 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
   private clearResultTimeout(): void {
     if (this.resultTimeout) { clearTimeout(this.resultTimeout); this.resultTimeout = null; }
+  }
+
+  private clearAnnouncementTimeout(): void {
+    if (this.announcementTimeout) { clearTimeout(this.announcementTimeout); this.announcementTimeout = null; }
   }
 }

@@ -47,3 +47,7 @@
 
   <button class="common-btn" (click)="exitGame()">EXIT</button>
 </main>
+
+@if (announcement(); as ann) {
+  <div class="announcement announcement--{{ ann.type }}">{{ ann.text }}</div>
+}

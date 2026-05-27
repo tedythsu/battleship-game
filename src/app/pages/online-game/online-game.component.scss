@@ -101,6 +101,30 @@
   pointer-events: none;
 }
 
+.announcement {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 2.8rem;
+  letter-spacing: 8px;
+  pointer-events: none;
+  z-index: 200;
+  animation: slide-announce 1.8s ease-in-out forwards;
+
+  &--hit  { color: #e74c3c; text-shadow: 0 0 24px #e74c3c; }
+  &--miss { color: #4f8ef7; text-shadow: 0 0 24px #4f8ef7; }
+  &--sunk { color: #f7a84f; text-shadow: 0 0 24px #f7a84f; }
+}
+
+@keyframes slide-announce {
+  0%   { transform: translateX(-110%) translateY(-50%); opacity: 0; }
+  18%  { transform: translateX(0)     translateY(-50%); opacity: 1; }
+  72%  { transform: translateX(0)     translateY(-50%); opacity: 1; }
+  100% { transform: translateX(110%)  translateY(-50%); opacity: 0; }
+}
+
 @media (max-width: 680px) {
   .game-container { padding: 10px 8px; gap: 8px; }
 
