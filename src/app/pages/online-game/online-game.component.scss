@@ -1,0 +1,26 @@
+.game-container { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px; }
+.top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; }
+.ptag { font-size: 13px; letter-spacing: 1px; &--me { color: #4caf50; } &--opp { color: #888; } }
+.timer {
+  text-align: center; border: 2px solid #2a2d3a; border-radius: 8px; padding: 8px 20px; min-width: 90px;
+  &--active { border-color: #e74c3c; background: #1a0a0a; &__count { color: #e74c3c; } }
+  &__label { font-size: 9px; letter-spacing: 2px; color: #888; }
+  &__count { font-size: 28px; font-weight: bold; color: #888; line-height: 1; }
+  &__unit { font-size: 9px; color: #666; }
+}
+.boards { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+.board-section { display: flex; flex-direction: column; gap: 2px; }
+.board-label { font-size: 10px; letter-spacing: 2px; color: #888; text-transform: uppercase; margin-bottom: 4px; &--atk { color: #f7a84f; } }
+.col-labels { display: grid; grid-template-columns: 18px repeat(8, 36px); gap: 2px; div { text-align: center; font-size: 9px; color: #555; } }
+.board-row { display: flex; gap: 2px; align-items: center; }
+.row-label { width: 18px; text-align: center; font-size: 9px; color: #555; }
+.board__cell {
+  width: 36px; height: 36px;
+  background: #1a1f2e; border: 1px solid #2a2d3a; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+  &--atk { cursor: default; }
+  &--clickable { cursor: crosshair; &:hover { background: #1e2840; border-color: #4f8ef7; } }
+}
+.cell--ship { background: #1a3a2e; border-color: #4caf50; }
+.cell--hit { background: #3a1a1a; border-color: #e74c3c; &::after { content: '💥'; } }
+.cell--miss { &::after { content: '○'; color: #3a5a8a; font-size: 11px; } }

@@ -1,0 +1,54 @@
+<main class="placement-container">
+  <header>
+    <h2>ARRANGE YOUR FLEET</h2>
+    @if (myNickname) { <span class="player-label">{{ myNickname }}</span> }
+  </header>
+
+  @if (isWaiting) {
+    <div class="waiting-msg">Waiting for opponent to finish placing...</div>
+  } @else {
+    <div class="placement-area">
+
+      <div class="board-wrapper">
+        <div class="board-col-labels">
+          <div></div>
+          @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
+        </div>
+        @for (ri of rows; track ri) {
+          <div class="board-row">
+            <div class="row-label">{{ letters[ri] }}</div>
+            @for (ci of cols; track ci) {
+              <div class="board__cell"
+                [class.board__cell--ship]="!!board()[ri * N + ci].ship"
+                [class.board__cell--hover]="isHovered(ri * N + ci)"
+                (mouseenter)="onHover(ri * N + ci)"
+                (mouseleave)="hovered = []"
+                (click)="onClick(ri * N + ci)">
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="ship-panel">
+        <p class="panel-label">SHIPS</p>
+        @for (ship of ships; track ship.name) {
+          <div class="ship-item"
+            [class.ship-item--placed]="ship.placed"
+            [class.ship-item--selected]="selected === ship"
+            (click)="selectShip(ship)">
+            <span class="ship-name">{{ ship.name }}</span>
+            <span class="ship-meta">×{{ ship.size }}</span>
+            @if (ship.placed) { <span class="check">✓</span> }
+          </div>
+        }
+        <button class="ctrl-btn" [disabled]="!selected" (click)="rotate()">↻ {{ dir }}</button>
+        <button class="ctrl-btn" (click)="randomize()">RANDOM</button>
+        <button class="common-btn confirm-btn" [disabled]="!allPlaced" (click)="confirm()">
+          {{ allPlaced ? 'CONFIRM' : shipsRemaining + ' LEFT' }}
+        </button>
+      </div>
+
+    </div>
+  }
+</main>

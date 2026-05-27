@@ -1,0 +1,56 @@
+<main class="game-container">
+  <div class="top-bar">
+    <span class="ptag ptag--me">● {{ myNickname }}</span>
+    <div class="timer" [class.timer--active]="isMyTurn()">
+      <div class="timer__label">{{ isMyTurn() ? 'YOUR TURN' : 'WAITING' }}</div>
+      <div class="timer__count">{{ timeLeft() }}</div>
+      <div class="timer__unit">SEC</div>
+    </div>
+    <span class="ptag ptag--opp">○ {{ opponentNickname }}</span>
+  </div>
+
+  <div class="boards">
+    <div class="board-section">
+      <div class="board-label">MY BOARD</div>
+      <div class="col-labels">
+        <div></div>
+        @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
+      </div>
+      @for (ri of rows; track ri) {
+        <div class="board-row">
+          <div class="row-label">{{ letters[ri] }}</div>
+          @for (ci of cols; track ci) {
+            <div class="board__cell"
+              [class.cell--ship]="!!myBoard()[ri * N + ci].ship && !myBoard()[ri * N + ci].hasBeenShot"
+              [class.cell--hit]="myBoard()[ri * N + ci].hasBeenShot && !!myBoard()[ri * N + ci].ship"
+              [class.cell--miss]="myBoard()[ri * N + ci].hasBeenShot && !myBoard()[ri * N + ci].ship">
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="board-section">
+      <div class="board-label board-label--atk">ATTACK BOARD</div>
+      <div class="col-labels">
+        <div></div>
+        @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
+      </div>
+      @for (ri of rows; track ri) {
+        <div class="board-row">
+          <div class="row-label">{{ letters[ri] }}</div>
+          @for (ci of cols; track ci) {
+            <div class="board__cell board__cell--atk"
+              [class.cell--hit]="attackBoard()[ri * N + ci].hasBeenShot && !!attackBoard()[ri * N + ci].ship"
+              [class.cell--miss]="attackBoard()[ri * N + ci].hasBeenShot && !attackBoard()[ri * N + ci].ship"
+              [class.cell--clickable]="isMyTurn() && !gameOver() && !attackBoard()[ri * N + ci].hasBeenShot"
+              (click)="fire(ri * N + ci)">
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <button class="common-btn" (click)="exitGame()">EXIT</button>
+</main>
