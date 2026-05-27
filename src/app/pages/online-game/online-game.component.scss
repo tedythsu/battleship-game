@@ -15,14 +15,18 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 6rem;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+  width: 100%;
 }
 
 .board {
   position: relative;
   margin-left: 1.5rem;
   display: flex;
+  width: calc(7 * 8 * 1vw);
+  max-width: calc(50 * 8 * 1px);
+  max-height: calc(50 * 8 * 1px);
   aspect-ratio: 1/1;
   flex: 1;
   flex-wrap: wrap;
@@ -30,7 +34,8 @@
   border: 2px solid;
   background: rgb(2, 0, 36);
   background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(30, 59, 112, 1) 50%, rgba(2, 0, 36, 1) 100%);
-  max-width: 400px;
+  opacity: 1;
+  transition: opacity 0.5s ease;
 
   &__player-label {
     pointer-events: none;
