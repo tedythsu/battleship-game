@@ -6,14 +6,15 @@ import { SettingsPageComponent } from './pages/settings-page/settings-page.compo
 import { OnlineLobbyComponent } from './pages/online-lobby/online-lobby.component';
 import { OnlinePlacementComponent } from './pages/online-placement/online-placement.component';
 import { OnlineGameComponent } from './pages/online-game/online-game.component';
+import { placementGuard, gameGuard } from './core/guards/online-session.guard';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent, pathMatch: 'full' },
   { path: 'game', component: GamePageComponent },
   { path: 'settings', component: SettingsPageComponent },
   { path: 'online', component: OnlineLobbyComponent },
-  { path: 'online/place', component: OnlinePlacementComponent },
-  { path: 'online/game', component: OnlineGameComponent },
+  { path: 'online/place', component: OnlinePlacementComponent, canActivate: [placementGuard] },
+  { path: 'online/game', component: OnlineGameComponent, canActivate: [gameGuard] },
   { path: '**', redirectTo: '' },
 ];
 
