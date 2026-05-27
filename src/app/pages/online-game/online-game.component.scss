@@ -1,5 +1,5 @@
 .game-container { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px; }
-.top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; }
+.top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 820px; }
 .ptag { font-size: 13px; letter-spacing: 1px; &--me { color: #4caf50; } &--opp { color: #888; } }
 .timer {
   text-align: center; border: 2px solid #2a2d3a; border-radius: 8px; padding: 8px 20px; min-width: 90px;
@@ -9,44 +9,93 @@
   &__count { font-size: 28px; font-weight: bold; color: #888; line-height: 1; }
   &__unit { font-size: 9px; color: #666; }
 }
-.boards { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
-.board-section { display: flex; flex-direction: column; gap: 2px; }
-.board-label { font-size: 10px; letter-spacing: 2px; color: #888; text-transform: uppercase; margin-bottom: 4px; &--atk { color: #f7a84f; } }
-.col-labels {
-  display: grid; grid-template-columns: 18px repeat(8, 36px); gap: 2px;
-  div { text-align: center; font-size: 9px; color: #555; }
+
+.boards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6rem;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
-.row-spacer { width: 18px; }
-.board-grid {
+
+.board {
+  position: relative;
+  margin-left: 1.5rem;
+  display: flex;
+  aspect-ratio: 1/1;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
   border: 2px solid;
   background: rgb(2, 0, 36);
   background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(30, 59, 112, 1) 50%, rgba(2, 0, 36, 1) 100%);
-}
-.board-row { display: flex; gap: 2px; align-items: center; }
-.row-label { width: 18px; text-align: center; font-size: 9px; color: #555; }
-.board__cell {
-  width: 36px; height: 36px;
-  border: 1px solid;
-  background-size: cover;
-  transition: background-color 0.5s ease;
-  &--ship { background: rgba(76, 175, 80, 0.35); }
-  &--shipwreck {
-    background-color: rgba(231, 76, 60, 0.45);
-    background-image: url("../../../assets/icons/explode.png");
+  max-width: 400px;
+
+  &__player-label {
     pointer-events: none;
-    animation: shake 0.25s;
+    color: #666666;
+    position: absolute;
+    top: -52px;
+    letter-spacing: 1px;
+    &--atk { color: #f7a84f; }
   }
-  &--has-been-shot {
-    background-color: rgba(79, 142, 247, 0.25);
-    background-image: url("../../../assets/icons/cross-modified.png");
+
+  &__coordinates {
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
     pointer-events: none;
+    font-size: 11px;
+    color: #555;
   }
-  &--clickable {
-    cursor: crosshair;
+
+  &__coordinates--numbers {
+    width: 100%;
+    top: -26px;
+  }
+
+  &__coordinates--letters {
+    left: -26px;
+    height: 100%;
+    flex-direction: column;
+  }
+
+  &__cell {
+    box-sizing: border-box;
+    width: calc(100% / 8);
+    max-width: 50px;
+    max-height: 50px;
+    border: 1px solid;
+    background-size: cover;
+    transition: background-color 0.5s ease;
+
     @media (hover: hover) {
       &:hover { background-color: red; cursor: pointer; }
     }
+
+    &--ship { background: rgba(76, 175, 80, 0.35); }
+
+    &--has-been-shot {
+      background-image: url("../../../assets/icons/cross-modified.png");
+      pointer-events: none;
+    }
+
+    &--shipwreck {
+      background-image: url("../../../assets/icons/explode.png");
+      pointer-events: none;
+      animation: shake 0.25s;
+    }
   }
+}
+
+.board--disable {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.board--view-only {
+  pointer-events: none;
 }
 
 @keyframes shake {
