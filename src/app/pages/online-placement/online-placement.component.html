@@ -9,27 +9,22 @@
   } @else {
     <div class="placement-area">
 
-      <div class="board-wrapper">
-        <div class="board-col-labels">
-          <div></div>
+      <div class="board">
+        <div class="board__coordinates board__coordinates--numbers">
           @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
         </div>
-        <div class="board-grid">
-          @for (ri of rows; track ri) {
-            <div class="board-row">
-              <div class="row-label">{{ letters[ri] }}</div>
-              @for (ci of cols; track ci) {
-                <div class="board__cell"
-                  [class.board__cell--ship]="!!board()[ri * N + ci].ship"
-                  [class.board__cell--hover]="isHovered(ri * N + ci)"
-                  (mouseenter)="onHover(ri * N + ci)"
-                  (mouseleave)="hovered = []"
-                  (click)="onClick(ri * N + ci)">
-                </div>
-              }
-            </div>
-          }
+        <div class="board__coordinates board__coordinates--letters">
+          @for (ri of rows; track ri) { <div>{{ letters[ri] }}</div> }
         </div>
+        @for (cell of board(); track cell.location; let i = $index) {
+          <div class="board__cell"
+            [class.board__cell--ship]="!!cell.ship"
+            [class.board__cell--hover]="isHovered(i)"
+            (mouseenter)="onHover(i)"
+            (mouseleave)="hovered = []"
+            (click)="onClick(i)">
+          </div>
+        }
       </div>
 
       <div class="ship-panel">
