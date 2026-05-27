@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, WritableSignal, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { SocketService, BoardCell } from 'src/app/core/services/socket.service';
+import { SocketService, BoardCell, generateEmptyBoard } from 'src/app/core/services/socket.service';
 
 interface Ship { name: string; size: number; placed: WritableSignal<boolean>; }
 
@@ -51,10 +51,7 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void { this.socketService.off('game_start'); }
 
   private initBoard(): void {
-    this.board.set(Array.from({ length: this.N * this.N }, (_, i) => ({
-      location: this.letters[Math.floor(i / this.N)] + ((i % this.N) + 1),
-      hasBeenShot: false,
-    })));
+    this.board.set(generateEmptyBoard(this.N));
     this.ships.forEach(s => s.placed.set(false));
     this.selected = null;
     this.hovered = [];
@@ -111,10 +108,7 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
 
   randomize(): void {
     const dirs = [Dir.Right, Dir.Down, Dir.Left, Dir.Up];
-    const emptyBoard = (): BoardCell[] => Array.from({ length: this.N * this.N }, (_, i) => ({
-      location: this.letters[Math.floor(i / this.N)] + ((i % this.N) + 1),
-      hasBeenShot: false,
-    }));
+    const emptyBoard = () => generateEmptyBoard(this.N);
 
     let b: BoardCell[] = [];
     let success = false;

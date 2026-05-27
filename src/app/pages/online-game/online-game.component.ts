@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, WritableSignal, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { SocketService, BoardCell } from 'src/app/core/services/socket.service';
+import { SocketService, BoardCell, generateEmptyBoard } from 'src/app/core/services/socket.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 
 type AnnouncementType = 'hit' | 'miss' | 'sunk';
@@ -35,9 +35,14 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   myNickname = '';
   opponentNickname = '';
 
+  exitPending = false;
+
   private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private turnStartTime = 0;
+  private turnDuration = 0;
   private resultTimeout: ReturnType<typeof setTimeout> | null = null;
   private announcementTimeout: ReturnType<typeof setTimeout> | null = null;
+  private exitTimeout: ReturnType<typeof setTimeout> | null = null;
   private defenderNeedsDelay = false;
   private mql: MediaQueryList | null = null;
   private readonly mqlListener = (e: MediaQueryListEvent) => this.isMobile.set(e.matches);
@@ -59,16 +64,8 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     const gs = this.socketService.gameState;
     this.myNickname = gs.myNickname ?? 'YOU';
     this.opponentNickname = gs.opponentNickname ?? 'OPPONENT';
-    this.myBoard.set(gs.myBoard ?? Array.from({ length: this.N * this.N }, (_, i) => ({
-      location: `${this.letters[Math.floor(i / this.N)]}${(i % this.N) + 1}`,
-      hasBeenShot: false,
-    })));
-    this.attackBoard.set(
-      Array.from({ length: this.N * this.N }, (_, i) => ({
-        location: `${this.letters[Math.floor(i / this.N)]}${(i % this.N) + 1}`,
-        hasBeenShot: false,
-      }))
-    );
+    this.myBoard.set(gs.myBoard ?? generateEmptyBoard(this.N));
+    this.attackBoard.set(generateEmptyBoard(this.N));
     const totalShips = new Set(this.myBoard().map(c => c.ship).filter(Boolean)).size;
     this.myShipsLeft.set(totalShips);
     this.opponentShipsLeft.set(totalShips);
@@ -108,7 +105,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         this.attackBoard.set(b);
         if (data.hit) {
           this.shakeAttackBoard.set(data.cellIndex);
-          setTimeout(() => this.shakeAttackBoard.set(null), 350);
+          setTimeout(() => this.shakeAttackBoard.set(null), 260);
         }
         if (data.shipSunk) this.opponentShipsLeft.update(n => n - 1);
         // Keep ATTACK BOARD shown 2s so user sees the result, then switch to MY BOARD
@@ -123,7 +120,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         this.myBoard.set(b);
         if (data.hit) {
           this.shakeMyBoard.set(data.cellIndex);
-          setTimeout(() => this.shakeMyBoard.set(null), 350);
+          setTimeout(() => this.shakeMyBoard.set(null), 260);
         }
         if (data.shipSunk) this.myShipsLeft.update(n => n - 1);
         // Flag: next turn_start (my turn) should delay before showing ATTACK BOARD
@@ -151,6 +148,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.stopTimer();
     this.clearResultTimeout();
     this.clearAnnouncementTimeout();
+    this.clearExitTimeout();
     ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected'].forEach(e => this.socketService.off(e));
   }
 
@@ -161,7 +159,21 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
 
+  requestExit(): void {
+    this.exitPending = true;
+    this.exitTimeout = setTimeout(() => {
+      this.exitPending = false;
+      this.exitTimeout = null;
+    }, 5000);
+  }
+
+  cancelExit(): void {
+    this.clearExitTimeout();
+    this.exitPending = false;
+  }
+
   exitGame(): void {
+    this.clearExitTimeout();
     this.socketService.disconnect();
     this.router.navigate(['']);
   }
@@ -177,16 +189,15 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
   private startTimer(seconds: number): void {
     this.stopTimer();
+    this.turnStartTime = Date.now();
+    this.turnDuration = seconds;
     this.timeLeft.set(seconds);
     this.timerInterval = setInterval(() => {
-      const next = this.timeLeft() - 1;
-      if (next <= 0) {
-        this.timeLeft.set(0);
-        this.stopTimer();
-      } else {
-        this.timeLeft.set(next);
-      }
-    }, 1000);
+      const elapsed = Math.floor((Date.now() - this.turnStartTime) / 1000);
+      const remaining = Math.max(0, this.turnDuration - elapsed);
+      this.timeLeft.set(remaining);
+      if (remaining <= 0) this.stopTimer();
+    }, 500);
   }
 
   private stopTimer(): void {
@@ -199,5 +210,9 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
   private clearAnnouncementTimeout(): void {
     if (this.announcementTimeout) { clearTimeout(this.announcementTimeout); this.announcementTimeout = null; }
+  }
+
+  private clearExitTimeout(): void {
+    if (this.exitTimeout) { clearTimeout(this.exitTimeout); this.exitTimeout = null; }
   }
 }

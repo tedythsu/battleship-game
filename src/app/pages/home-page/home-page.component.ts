@@ -11,10 +11,6 @@ import { Router } from '@angular/router';
 export class HomePageComponent {
   constructor(private router: Router) {}
 
-  navigateToGame() {
-    this.router.navigate(['game'], { state: { gameMode: 'Single Player' } });
-  }
-
   navigateToOnline() {
     this.router.navigate(['online']);
   }

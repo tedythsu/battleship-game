@@ -8,6 +8,14 @@ export interface BoardCell {
   ship?: string;
 }
 
+export function generateEmptyBoard(n: number): BoardCell[] {
+  const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  return Array.from({ length: n * n }, (_, i) => ({
+    location: `${L[Math.floor(i / n)]}${(i % n) + 1}`,
+    hasBeenShot: false,
+  }));
+}
+
 export interface OnlineGameState {
   roomCode: string;
   myNickname: string;

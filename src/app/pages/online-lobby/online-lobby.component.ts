@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SocketService } from 'src/app/core/services/socket.service';
@@ -7,7 +6,7 @@ import { SocketService } from 'src/app/core/services/socket.service';
 @Component({
   selector: 'app-online-lobby',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './online-lobby.component.html',
   styleUrl: './online-lobby.component.scss',
 })
@@ -48,6 +47,7 @@ export class OnlineLobbyComponent implements OnInit, OnDestroy {
 
   createRoom(): void {
     if (!this.nickname.trim()) return;
+    this.socketService.connect();
     this.socketService.gameState.myNickname = this.nickname.trim().toUpperCase();
     this.errorMessage = '';
     this.socketService.emit('create_room', { nickname: this.socketService.gameState.myNickname });
@@ -55,6 +55,7 @@ export class OnlineLobbyComponent implements OnInit, OnDestroy {
 
   joinRoom(): void {
     if (!this.nickname.trim() || !this.joinCode.trim()) return;
+    this.socketService.connect();
     this.socketService.gameState.myNickname = this.nickname.trim().toUpperCase();
     this.errorMessage = '';
     this.socketService.emit('join_room', {

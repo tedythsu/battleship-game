@@ -1,26 +1,25 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-alert-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './alert-modal.component.html',
   styleUrl: './alert-modal.component.scss'
 })
 export class AlertModalComponent {
+  @ViewChild('dialogRef') dialogRef!: ElementRef<HTMLDialogElement>;
+  @Output() closed = new EventEmitter<void>();
 
-  dialogMessage: string = '';
+  dialogMessage = '';
 
-  public showModal(message: string): void {
-    const dialog = document.querySelector("dialog");
+  show(message: string): void {
     this.dialogMessage = message;
-    dialog?.showModal();
+    this.dialogRef.nativeElement.showModal();
   }
 
-  public closeModal(): void {
-    const dialog = document.querySelector("dialog");
-    dialog?.close();
+  close(): void {
+    this.dialogRef.nativeElement.close();
+    this.closed.emit();
   }
-
 }

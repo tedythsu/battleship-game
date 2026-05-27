@@ -1,7 +1,7 @@
 <main class="game-container">
   <div class="top-bar">
     <span class="ptag ptag--me">● {{ myNickname }}</span>
-    <div class="timer" [class.timer--active]="isMyTurn()">
+    <div class="timer" [class.timer--active]="isMyTurn()" [class.timer--urgent]="isMyTurn() && timeLeft() <= 10">
       <div class="timer__label">{{ isMyTurn() ? 'YOUR TURN' : 'WAITING' }}</div>
       <div class="timer__count">{{ timeLeft() }}</div>
       <div class="timer__unit">SEC</div>
@@ -59,7 +59,15 @@
     }
   </div>
 
-  <button class="common-btn" (click)="exitGame()">EXIT</button>
+  <div class="exit-controls">
+    @if (exitPending) {
+      <span class="exit-prompt">LEAVE GAME?</span>
+      <button class="common-btn" (click)="exitGame()">YES</button>
+      <button class="common-btn" (click)="cancelExit()">NO</button>
+    } @else {
+      <button class="common-btn" (click)="requestExit()">EXIT</button>
+    }
+  </div>
 </main>
 
 <span class="sr-only" aria-live="assertive" aria-atomic="true">{{ announcement()?.text ?? '' }}</span>
