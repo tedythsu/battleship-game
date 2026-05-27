@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, WritableSignal, signal } from '@angular/c
 import { Router } from '@angular/router';
 import { SocketService, BoardCell } from 'src/app/core/services/socket.service';
 
-interface Ship { name: string; size: number; placed: boolean; }
+interface Ship { name: string; size: number; placed: WritableSignal<boolean>; }
 
 enum Dir { Right = 'Right', Down = 'Down', Left = 'Left', Up = 'Up' }
 
@@ -20,9 +20,9 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
   readonly cols = Array.from({ length: 8 }, (_, i) => i);
 
   ships: Ship[] = [
-    { name: 'Destroyer', size: 2, placed: false },
-    { name: 'Cruiser', size: 3, placed: false },
-    { name: 'Battleship', size: 4, placed: false },
+    { name: 'Destroyer', size: 2, placed: signal(false) },
+    { name: 'Cruiser', size: 3, placed: signal(false) },
+    { name: 'Battleship', size: 4, placed: signal(false) },
   ];
 
   board: WritableSignal<BoardCell[]> = signal([]);
@@ -33,11 +33,11 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
   myNickname = '';
 
   get allPlaced(): boolean {
-    return this.board().length > 0 && this.ships.every(s => s.placed);
+    return this.board().length > 0 && this.ships.every(s => s.placed());
   }
 
   get shipsRemaining(): number {
-    return this.ships.filter(s => !s.placed).length;
+    return this.ships.filter(s => !s.placed()).length;
   }
 
   constructor(private socketService: SocketService, private router: Router) {}
@@ -55,13 +55,13 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
       location: this.letters[Math.floor(i / this.N)] + ((i % this.N) + 1),
       hasBeenShot: false,
     })));
-    this.ships.forEach(s => s.placed = false);
+    this.ships.forEach(s => s.placed.set(false));
     this.selected = null;
     this.hovered = [];
   }
 
   selectShip(ship: Ship): void {
-    if (ship.placed) return;
+    if (ship.placed()) return;
     this.selected = this.selected === ship ? null : ship;
     this.hovered = [];
   }
@@ -85,7 +85,7 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
     const b = [...this.board()];
     idxs.forEach(idx => b[idx] = { ...b[idx], ship: this.selected!.name });
     this.board.set(b);
-    this.selected.placed = true;
+    this.selected!.placed.set(true);
     this.selected = null;
     this.hovered = [];
   }
@@ -116,7 +116,7 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
       hasBeenShot: false,
     }));
     this.ships.forEach(ship => {
-      ship.placed = false;
+      ship.placed.set(false);
       let ok = false, tries = 0;
       while (!ok && tries++ < 200) {
         const start = Math.floor(Math.random() * b.length);
@@ -130,7 +130,7 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
           : true;
         if (noOob && noOverlap && noWrap) {
           idxs.forEach(i => b[i] = { ...b[i], ship: ship.name });
-          ship.placed = true;
+          ship.placed.set(true);
           ok = true;
         }
       }

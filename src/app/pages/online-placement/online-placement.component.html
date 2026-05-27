@@ -31,12 +31,12 @@
         <p class="panel-label">SHIPS</p>
         @for (ship of ships; track ship.name) {
           <div class="ship-item"
-            [class.ship-item--placed]="ship.placed"
+            [class.ship-item--placed]="ship.placed()"
             [class.ship-item--selected]="selected === ship"
             (click)="selectShip(ship)">
             <span class="ship-name">{{ ship.name }}</span>
             <span class="ship-meta">×{{ ship.size }}</span>
-            @if (ship.placed) { <span class="check">✓</span> }
+            @if (ship.placed()) { <span class="check">✓</span> }
           </div>
         }
         <button class="ctrl-btn" [disabled]="!selected" (click)="rotate()">↻ {{ dir }}</button>
