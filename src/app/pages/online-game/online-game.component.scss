@@ -24,12 +24,12 @@
 
   &--active {
     border-color: var(--c-hit);
-    background: oklch(0.07 0.04 25);
+    background: color-mix(in oklch, var(--c-hit) 12%, var(--c-bg));
   }
   &--active &__count { color: var(--c-hit); }
 
   &__label { font-size: 9px; letter-spacing: 2px; color: var(--c-text-muted); }
-  &__count  { font-size: 28px; font-weight: bold; color: var(--c-text-dim); line-height: 1; }
+  &__count  { font-size: 28px; font-weight: normal; color: var(--c-text-dim); line-height: 1; }
   &__unit   { font-size: 9px; color: var(--c-text-muted); }
 }
 
@@ -38,9 +38,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6rem;
-  margin-bottom: 3rem;
-  margin-top: 3rem;
+  gap: var(--sp-8);
+  margin-bottom: var(--sp-7);
+  margin-top: var(--sp-7);
   width: 100%;
 }
 
@@ -59,9 +59,9 @@
   background: var(--c-bg);
   background: linear-gradient(
     90deg,
-    var(--c-bg)             0%,
-    oklch(0.11 0.018 230)  50%,
-    var(--c-bg)            100%
+    var(--c-bg)       0%,
+    var(--c-surface)  50%,
+    var(--c-bg)      100%
   );
   transition: opacity 0.4s ease;
 
@@ -110,7 +110,7 @@
       &:hover { background: oklch(0.28 0.10 25 / 0.50); cursor: crosshair; }
     }
 
-    &--ship { background: oklch(0.48 0.10 145 / 0.35); }
+    &--ship { background: oklch(from var(--c-ship) l c h / 0.35); }
 
     &--has-been-shot {
       background-image: url("../../../assets/icons/cross-modified.png");

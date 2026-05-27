@@ -41,9 +41,9 @@
   background: var(--c-bg);
   background: linear-gradient(
     90deg,
-    var(--c-bg)              0%,
-    oklch(0.11 0.018 230)   50%,
-    var(--c-bg)             100%
+    var(--c-bg)       0%,
+    var(--c-surface)  50%,
+    var(--c-bg)      100%
   );
 
   &__coordinates {
@@ -67,8 +67,8 @@
     cursor: crosshair;
     transition: background 120ms ease;
 
-    &--ship  { background: oklch(0.48 0.10 145 / 0.40); }
-    &--hover { background: oklch(0.46 0.06 220 / 0.35); outline: 1px dashed var(--c-accent); }
+    &--ship  { background: oklch(from var(--c-ship) l c h / 0.40); }
+    &--hover { background: color-mix(in oklch, var(--c-miss) 35%, transparent); outline: 1px dashed var(--c-accent); }
   }
 }
 
@@ -90,16 +90,21 @@
 }
 
 .ship-item {
+  appearance: none;
+  background: transparent;
+  font-family: 'Beon', sans-serif;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
+  min-height: 44px;
   border: 1px solid var(--c-border-dim);
   cursor: pointer;
   transition: border-color 120ms ease, color 120ms ease;
 
   &--placed  { border-color: var(--c-ship); color: var(--c-ship); cursor: default; }
-  &--selected { border-color: var(--c-accent); background: oklch(0.11 0.012 220); }
+  &--selected { border-color: var(--c-accent); background: var(--c-surface); }
 }
 
 .ship-name { flex: 1; font-size: 11px; }
@@ -112,7 +117,7 @@
   border: 1px solid var(--c-border-dim);
   color: var(--c-text-dim);
   padding: var(--sp-2) var(--sp-3);
-  min-height: 36px;
+  min-height: 44px;
   cursor: pointer;
   font-family: 'Beon', sans-serif;
   font-size: 10px;

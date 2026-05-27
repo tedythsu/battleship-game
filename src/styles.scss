@@ -40,9 +40,6 @@ body {
   --sp-7: 48px;
   --sp-8: 64px;
 
-  /* ── Backward compat ── */
-  --bg-color:   var(--c-bg);
-  --text-color: var(--c-text);
 }
 
 @font-face {
@@ -102,4 +99,17 @@ header {
 
   &:active  { opacity: 0.7; }
   &:disabled { opacity: 0.28; cursor: not-allowed; pointer-events: none; }
+}
+
+/* ── Screen-reader only utility ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

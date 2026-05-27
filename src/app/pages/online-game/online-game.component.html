@@ -42,10 +42,16 @@
         </div>
         @for (cell of attackBoard(); track cell.location; let i = $index) {
           <div class="board__cell"
+            role="button"
+            [attr.tabindex]="isMyTurn() && !gameOver() && !cell.hasBeenShot ? 0 : -1"
+            [attr.aria-label]="'Fire at ' + cell.location + (cell.hasBeenShot ? ', already shot' : '')"
+            [attr.aria-disabled]="!isMyTurn() || gameOver() || cell.hasBeenShot"
             [class.board__cell--shipwreck]="cell.hasBeenShot && !!cell.ship"
             [class.board__cell--has-been-shot]="cell.hasBeenShot && !cell.ship"
             [class.board__cell--shake]="shakeAttackBoard() === i"
-            (click)="fire(i)">
+            (click)="fire(i)"
+            (keydown.enter)="fire(i)"
+            (keydown.space)="$event.preventDefault(); fire(i)">
           </div>
         }
         <div class="board__ships-count">SHIPS LEFT: {{ opponentShipsLeft() }}</div>
@@ -56,6 +62,8 @@
   <button class="common-btn" (click)="exitGame()">EXIT</button>
 </main>
 
+<span class="sr-only" aria-live="assertive" aria-atomic="true">{{ announcement()?.text ?? '' }}</span>
+
 @if (announcement(); as ann) {
-  <div class="announcement announcement--{{ ann.type }}">{{ ann.text }}</div>
+  <div class="announcement announcement--{{ ann.type }}" aria-hidden="true">{{ ann.text }}</div>
 }

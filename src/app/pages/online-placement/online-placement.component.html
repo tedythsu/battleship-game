@@ -20,8 +20,8 @@
           <div class="board__cell"
             [class.board__cell--ship]="!!cell.ship"
             [class.board__cell--hover]="isHovered(i)"
-            (mouseenter)="onHover(i)"
-            (mouseleave)="hovered = []"
+            (pointerenter)="onHover(i)"
+            (pointerleave)="hovered = []"
             (click)="onClick(i)">
           </div>
         }
@@ -30,14 +30,17 @@
       <div class="ship-panel">
         <p class="panel-label">SHIPS</p>
         @for (ship of ships; track ship.name) {
-          <div class="ship-item"
+          <button class="ship-item"
             [class.ship-item--placed]="ship.placed()"
             [class.ship-item--selected]="selected === ship"
+            [attr.aria-pressed]="!ship.placed() ? (selected === ship) : null"
+            [attr.aria-disabled]="ship.placed() ? 'true' : null"
+            [attr.aria-label]="ship.name + ', size ' + ship.size + (ship.placed() ? ', placed' : '')"
             (click)="selectShip(ship)">
-            <span class="ship-name">{{ ship.name }}</span>
-            <span class="ship-meta">×{{ ship.size }}</span>
-            @if (ship.placed()) { <span class="check">✓</span> }
-          </div>
+            <span class="ship-name" aria-hidden="true">{{ ship.name }}</span>
+            <span class="ship-meta" aria-hidden="true">×{{ ship.size }}</span>
+            @if (ship.placed()) { <span aria-hidden="true">✓</span> }
+          </button>
         }
         <button class="ctrl-btn" [disabled]="!selected" (click)="rotate()">↻ {{ dir }}</button>
         <button class="ctrl-btn" (click)="randomize()">RANDOM</button>
