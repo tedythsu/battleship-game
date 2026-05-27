@@ -3,7 +3,8 @@
 .ptag { font-size: 13px; letter-spacing: 1px; &--me { color: #4caf50; } &--opp { color: #888; } }
 .timer {
   text-align: center; border: 2px solid #2a2d3a; border-radius: 8px; padding: 8px 20px; min-width: 90px;
-  &--active { border-color: #e74c3c; background: #1a0a0a; &__count { color: #e74c3c; } }
+  &--active { border-color: #e74c3c; background: #1a0a0a; }
+  &--active &__count { color: #e74c3c; }
   &__label { font-size: 9px; letter-spacing: 2px; color: #888; }
   &__count { font-size: 28px; font-weight: bold; color: #888; line-height: 1; }
   &__unit { font-size: 9px; color: #666; }
@@ -11,16 +12,50 @@
 .boards { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
 .board-section { display: flex; flex-direction: column; gap: 2px; }
 .board-label { font-size: 10px; letter-spacing: 2px; color: #888; text-transform: uppercase; margin-bottom: 4px; &--atk { color: #f7a84f; } }
-.col-labels { display: grid; grid-template-columns: 18px repeat(8, 36px); gap: 2px; div { text-align: center; font-size: 9px; color: #555; } }
+.col-labels {
+  display: grid; grid-template-columns: 18px repeat(8, 36px); gap: 2px;
+  div { text-align: center; font-size: 9px; color: #555; }
+}
+.row-spacer { width: 18px; }
+.board-grid {
+  border: 2px solid;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(30, 59, 112, 1) 50%, rgba(2, 0, 36, 1) 100%);
+}
 .board-row { display: flex; gap: 2px; align-items: center; }
 .row-label { width: 18px; text-align: center; font-size: 9px; color: #555; }
 .board__cell {
   width: 36px; height: 36px;
-  background: #1a1f2e; border: 1px solid #2a2d3a; border-radius: 2px;
-  display: flex; align-items: center; justify-content: center; font-size: 14px;
-  &--atk { cursor: default; }
-  &--clickable { cursor: crosshair; &:hover { background: #1e2840; border-color: #4f8ef7; } }
+  border: 1px solid;
+  background-size: cover;
+  transition: background-color 0.5s ease;
+  &--ship { background: rgba(76, 175, 80, 0.35); }
+  &--shipwreck {
+    background-image: url("../../../assets/icons/explode.png");
+    pointer-events: none;
+    animation: shake 0.25s;
+  }
+  &--has-been-shot {
+    background-image: url("../../../assets/icons/cross-modified.png");
+    pointer-events: none;
+  }
+  &--clickable {
+    @media (hover: hover) {
+      &:hover { background-color: red; cursor: pointer; }
+    }
+  }
 }
-.cell--ship { background: #1a3a2e; border-color: #4caf50; }
-.cell--hit { background: #3a1a1a; border-color: #e74c3c; &::after { content: '💥'; } }
-.cell--miss { &::after { content: '○'; color: #3a5a8a; font-size: 11px; } }
+
+@keyframes shake {
+  0%   { transform: translate(1px, 1px) rotate(0deg); }
+  10%  { transform: translate(-1px, -2px) rotate(-1deg); }
+  20%  { transform: translate(-3px, 0px) rotate(1deg); }
+  30%  { transform: translate(3px, 2px) rotate(0deg); }
+  40%  { transform: translate(1px, -1px) rotate(1deg); }
+  50%  { transform: translate(-1px, 2px) rotate(-1deg); }
+  60%  { transform: translate(-3px, 1px) rotate(0deg); }
+  70%  { transform: translate(3px, 1px) rotate(-1deg); }
+  80%  { transform: translate(-1px, -1px) rotate(1deg); }
+  90%  { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
