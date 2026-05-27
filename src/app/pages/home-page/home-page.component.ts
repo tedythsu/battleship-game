@@ -8,10 +8,9 @@ import { AlertService } from 'src/app/core/services/alert.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.scss'
+  styleUrl: './home-page.component.scss',
 })
 export class HomePageComponent {
-
   constructor(private router: Router, private alertService: AlertService) {}
 
   get isOnMobileDevice() {
@@ -20,9 +19,13 @@ export class HomePageComponent {
 
   navigateToGame(gameMode: string) {
     if (gameMode === 'Multi Player' && this.isOnMobileDevice) {
-      this.alertService.showModal(`2 players mode is not available on mobile device!`);
+      this.alertService.showModal('2 players mode is not available on mobile device!');
     } else {
-      this.router.navigate(["game"], {state: {gameMode: gameMode}});
+      this.router.navigate(['game'], { state: { gameMode } });
     }
+  }
+
+  navigateToOnline() {
+    this.router.navigate(['online']);
   }
 }
