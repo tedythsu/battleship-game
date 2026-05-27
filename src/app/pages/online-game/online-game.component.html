@@ -9,7 +9,7 @@
     <span class="ptag ptag--opp">○ {{ opponentNickname }}</span>
   </div>
 
-  <div class="boards">
+  <div class="boards" [class.my-turn]="isMyTurn()" [class.game-over]="gameOver()">
     <div class="board board--view-only">
       <div class="board__player-label">MY BOARD</div>
       <div class="board__coordinates board__coordinates--numbers">
