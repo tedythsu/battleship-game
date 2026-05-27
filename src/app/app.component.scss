@@ -1,9 +1,8 @@
 .page-container {
   display: flex;
   flex-direction: column;
-  color: var(--text-color);
-  background-color: var(--bg-color);
-  transition: all ease 0.25s;
+  color: var(--c-text);
+  background-color: var(--c-bg);
 
   .content-container {
     height: calc(100vh - var(--header-height));
@@ -11,7 +10,7 @@
     overflow-y: auto;
 
     &__main {
-      padding: 2rem;
+      padding: var(--sp-6);
       min-height: calc(100% - var(--header-height) - var(--footer-height));
     }
   }

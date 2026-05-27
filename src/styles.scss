@@ -1,17 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
-
 body {
   margin: 0;
-  font-family: 'Beon';
+  font-family: 'Beon', sans-serif;
   overflow: hidden;
-  --bg-color: #000000;
-  --text-color: #FFFFFF;
+  background-color: var(--c-bg);
+  color: var(--c-text);
 }
-
 
 :root {
   --header-height: 48px;
-  --footer-height: 50.5px;
+  --footer-height: 44px;
+
+  /* ── Color tokens (oklch, hue 220 = blue-steel) ── */
+  --c-bg:         oklch(0.04 0.008 220);
+  --c-surface:    oklch(0.09 0.010 220);
+  --c-border:     oklch(0.22 0.012 220);
+  --c-border-dim: oklch(0.14 0.008 220);
+
+  --c-text:       oklch(0.94 0.006 220);
+  --c-text-dim:   oklch(0.52 0.010 220);
+  --c-text-muted: oklch(0.34 0.006 220);
+
+  --c-accent:     oklch(0.60 0.042 220);
+  --c-accent-sub: oklch(0.44 0.035 220);
+
+  --c-hit:        oklch(0.54 0.18  25);
+  --c-sunk:       oklch(0.65 0.14  55);
+  --c-ship:       oklch(0.48 0.10 145);
+  --c-miss:       oklch(0.46 0.08 220);
+
+  /* ── 4pt spacing scale ── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* ── Backward compat ── */
+  --bg-color:   var(--c-bg);
+  --text-color: var(--c-text);
 }
 
 @font-face {
@@ -21,45 +50,54 @@ body {
   font-style: normal;
 }
 
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #F5F5F5;
+h1, h2, h3 {
+  font-family: 'Beon', sans-serif;
+  font-weight: normal;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-indent: 4px;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+  margin: 0;
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-  background-color: #F5F5F5;
+header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #000000;
-  border: 1px solid #555555;
-}
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar        { width: 4px; background: var(--c-bg); }
+::-webkit-scrollbar-thumb  { background: var(--c-border); }
 
+/* ── Primary action button ── */
 .common-btn {
-  padding: 12px 26px;
-  color: #fff;
-  border: 0;
-  font-weight: bold;
-  font-size: 16px;
-  transition: all 150ms ease-in-out;
-  font-family: 'Beon';
-  min-width: 139px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-3) var(--sp-6);
+  min-height: 44px;
+  min-width: 120px;
+  font-family: 'Beon', sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  letter-spacing: 4px;
+  text-indent: 4px;
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 120ms ease, background 120ms ease, opacity 120ms ease;
 
-  // border-radius: 12px;
-  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 0 inset;
-  background-color: #1A1B1D;
-  background-image: linear-gradient(180deg, rgba(206, 211, 234, 0.07) 0%, transparent 100%);
-
-  // only if the device has true hover functionality:
   @media (hover: hover) {
     &:hover {
-      filter: brightness(1.1);
-      cursor: pointer;
+      border-color: var(--c-accent);
+      background: oklch(0.12 0.012 220);
     }
   }
 
-  &:active {
-    transform: scale(.95);
-  }
+  &:active  { opacity: 0.7; }
+  &:disabled { opacity: 0.28; cursor: not-allowed; pointer-events: none; }
 }
