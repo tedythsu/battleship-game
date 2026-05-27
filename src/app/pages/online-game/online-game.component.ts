@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, WritableSignal, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SocketService, BoardCell } from 'src/app/core/services/socket.service';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -7,7 +6,7 @@ import { AlertService } from 'src/app/core/services/alert.service';
 @Component({
   selector: 'app-online-game',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './online-game.component.html',
   styleUrl: './online-game.component.scss',
 })
