@@ -9,40 +9,46 @@
     <span class="ptag ptag--opp">○ {{ opponentNickname }}</span>
   </div>
 
-  <div class="boards" [class.my-turn]="showAttack()" [class.game-over]="gameOver()">
-    <div class="board board--view-only">
-      <div class="board__player-label">MY BOARD</div>
-      <div class="board__coordinates board__coordinates--numbers">
-        @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
-      </div>
-      <div class="board__coordinates board__coordinates--letters">
-        @for (ri of rows; track ri) { <div>{{ letters[ri] }}</div> }
-      </div>
-      @for (cell of myBoard(); track cell.location; let i = $index) {
-        <div class="board__cell"
-          [class.board__cell--ship]="!!cell.ship && !cell.hasBeenShot"
-          [class.board__cell--shipwreck]="cell.hasBeenShot && !!cell.ship"
-          [class.board__cell--has-been-shot]="cell.hasBeenShot && !cell.ship">
+  <div class="boards" [class.game-over]="gameOver()">
+    @if (!isMobile() || !showAttack() || gameOver()) {
+      <div class="board board--view-only">
+        <div class="board__player-label">MY BOARD</div>
+        <div class="board__coordinates board__coordinates--numbers">
+          @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
         </div>
-      }
-    </div>
+        <div class="board__coordinates board__coordinates--letters">
+          @for (ri of rows; track ri) { <div>{{ letters[ri] }}</div> }
+        </div>
+        @for (cell of myBoard(); track cell.location; let i = $index) {
+          <div class="board__cell"
+            [class.board__cell--ship]="!!cell.ship && !cell.hasBeenShot"
+            [class.board__cell--shipwreck]="cell.hasBeenShot && !!cell.ship"
+            [class.board__cell--has-been-shot]="cell.hasBeenShot && !cell.ship"
+            [class.board__cell--shake]="shakeMyBoard() === i">
+          </div>
+        }
+      </div>
+    }
 
-    <div class="board" [class.board--disable]="!isMyTurn() || gameOver()">
-      <div class="board__player-label board__player-label--atk">ATTACK BOARD</div>
-      <div class="board__coordinates board__coordinates--numbers">
-        @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
-      </div>
-      <div class="board__coordinates board__coordinates--letters">
-        @for (ri of rows; track ri) { <div>{{ letters[ri] }}</div> }
-      </div>
-      @for (cell of attackBoard(); track cell.location; let i = $index) {
-        <div class="board__cell"
-          [class.board__cell--shipwreck]="cell.hasBeenShot && !!cell.ship"
-          [class.board__cell--has-been-shot]="cell.hasBeenShot && !cell.ship"
-          (click)="fire(i)">
+    @if (!isMobile() || showAttack() || gameOver()) {
+      <div class="board" [class.board--disable]="!isMyTurn() || gameOver()">
+        <div class="board__player-label board__player-label--atk">ATTACK BOARD</div>
+        <div class="board__coordinates board__coordinates--numbers">
+          @for (ci of cols; track ci) { <div>{{ ci + 1 }}</div> }
         </div>
-      }
-    </div>
+        <div class="board__coordinates board__coordinates--letters">
+          @for (ri of rows; track ri) { <div>{{ letters[ri] }}</div> }
+        </div>
+        @for (cell of attackBoard(); track cell.location; let i = $index) {
+          <div class="board__cell"
+            [class.board__cell--shipwreck]="cell.hasBeenShot && !!cell.ship"
+            [class.board__cell--has-been-shot]="cell.hasBeenShot && !cell.ship"
+            [class.board__cell--shake]="shakeAttackBoard() === i"
+            (click)="fire(i)">
+          </div>
+        }
+      </div>
+    }
   </div>
 
   <button class="common-btn" (click)="exitGame()">EXIT</button>

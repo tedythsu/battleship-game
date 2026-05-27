@@ -87,8 +87,9 @@
     &--shipwreck {
       background-image: url("../../../assets/icons/explode.png");
       pointer-events: none;
-      animation: shake 0.25s;
     }
+
+    &--shake { animation: shake 0.25s; }
   }
 }
 
@@ -148,7 +149,6 @@
     justify-content: center;
   }
 
-  // one board at a time: fills most of screen width
   .board {
     width: calc(100vw - 3.25rem);
     max-width: 360px;
@@ -156,21 +156,7 @@
     margin-left: 1.625rem;
   }
 
-  // waiting (opponent's turn): show MY BOARD, hide ATTACK BOARD
-  .boards:not(.my-turn):not(.game-over) .board:not(.board--view-only) {
-    display: none;
-  }
-
-  // my turn: hide MY BOARD, show ATTACK BOARD
-  .boards.my-turn:not(.game-over) .board--view-only {
-    display: none;
-  }
-
-  // game over: show both boards stacked
-  .boards.game-over {
-    gap: 5rem;
-    .board { display: flex; }
-  }
+  .boards.game-over { gap: 5rem; }
 }
 
 @keyframes shake {

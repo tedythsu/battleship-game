@@ -25,7 +25,10 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   timeLeft: WritableSignal<number> = signal(30);
   gameOver: WritableSignal<boolean> = signal(false);
   showAttack: WritableSignal<boolean> = signal(false);
+  isMobile: WritableSignal<boolean> = signal(false);
   announcement: WritableSignal<Announcement | null> = signal(null);
+  shakeMyBoard: WritableSignal<number | null> = signal(null);
+  shakeAttackBoard: WritableSignal<number | null> = signal(null);
 
   myNickname = '';
   opponentNickname = '';
@@ -33,8 +36,9 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private resultTimeout: ReturnType<typeof setTimeout> | null = null;
   private announcementTimeout: ReturnType<typeof setTimeout> | null = null;
-  // Flag: opponent just fired, so delay switching to ATTACK BOARD on next turn_start
   private defenderNeedsDelay = false;
+  private mql: MediaQueryList | null = null;
+  private readonly mqlListener = (e: MediaQueryListEvent) => this.isMobile.set(e.matches);
 
   constructor(
     private socketService: SocketService,
@@ -43,6 +47,10 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.mql = window.matchMedia('(max-width: 680px)');
+    this.isMobile.set(this.mql.matches);
+    this.mql.addEventListener('change', this.mqlListener);
+
     ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected']
       .forEach(e => this.socketService.off(e));
 
@@ -93,6 +101,10 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         const b = [...this.attackBoard()];
         b[data.cellIndex] = { ...b[data.cellIndex], hasBeenShot: true, ship: data.hit ? (data.shipName ?? 'hit') : undefined };
         this.attackBoard.set(b);
+        if (data.hit) {
+          this.shakeAttackBoard.set(data.cellIndex);
+          setTimeout(() => this.shakeAttackBoard.set(null), 350);
+        }
         // Keep ATTACK BOARD shown 2s so user sees the result, then switch to MY BOARD
         this.clearResultTimeout();
         this.resultTimeout = setTimeout(() => {
@@ -103,6 +115,10 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         const b = [...this.myBoard()];
         b[data.cellIndex] = { ...b[data.cellIndex], hasBeenShot: true };
         this.myBoard.set(b);
+        if (data.hit) {
+          this.shakeMyBoard.set(data.cellIndex);
+          setTimeout(() => this.shakeMyBoard.set(null), 350);
+        }
         // Flag: next turn_start (my turn) should delay before showing ATTACK BOARD
         this.defenderNeedsDelay = true;
       }
@@ -124,6 +140,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.mql?.removeEventListener('change', this.mqlListener);
     this.stopTimer();
     this.clearResultTimeout();
     this.clearAnnouncementTimeout();
