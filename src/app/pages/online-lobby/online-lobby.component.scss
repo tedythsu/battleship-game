@@ -10,8 +10,14 @@
 .lobby-form {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
-  width: 280px;
+  gap: var(--sp-4);
+  width: 320px;
+}
+
+.callsign-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
 }
 
 .field-label {
@@ -53,6 +59,48 @@
   text-indent: 3px;
   padding: var(--sp-1) 0;
 }
+
+.action-grid {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--c-border);
+}
+
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+}
+
+.action-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-indent: 3px;
+  color: var(--c-text-dim);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.action-or {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-5);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--c-text-muted);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--c-border-dim);
+  }
+}
+
+.action-btn { width: 100%; }
 
 .join-row { display: flex; gap: var(--sp-2); }
 

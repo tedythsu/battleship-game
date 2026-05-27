@@ -3,26 +3,41 @@
 
   @if (!isWaiting) {
     <div class="lobby-form">
-      <label class="field-label">NICKNAME</label>
-      <input class="field-input" [(ngModel)]="nickname" placeholder="Enter nickname" maxlength="12" />
+
+      <div class="callsign-section">
+        <label class="field-label" for="nickname">CALLSIGN</label>
+        <input id="nickname" class="field-input" [(ngModel)]="nickname"
+               placeholder="ENTER YOUR NAME" maxlength="12" autocomplete="off" />
+      </div>
 
       @if (errorMessage) {
-        <p class="error-msg">{{ errorMessage }}</p>
+        <p class="error-msg" role="alert">{{ errorMessage }}</p>
       }
 
-      <button class="common-btn" [disabled]="!nickname.trim()" (click)="createRoom()">
-        CREATE ROOM
-      </button>
+      <div class="action-grid">
+        <div class="action-panel">
+          <p class="action-label">CREATE NEW ROOM</p>
+          <button class="common-btn action-btn"
+                  [disabled]="!nickname.trim()" (click)="createRoom()">
+            CREATE
+          </button>
+        </div>
 
-      <div class="divider">OR JOIN</div>
+        <div class="action-or">OR</div>
 
-      <div class="join-row">
-        <input class="field-input field-input--code" [(ngModel)]="joinCode"
-          placeholder="Room code" maxlength="4" />
-        <button class="common-btn" [disabled]="!nickname.trim() || !joinCode.trim()" (click)="joinRoom()">
-          JOIN
-        </button>
+        <div class="action-panel">
+          <p class="action-label">JOIN EXISTING ROOM</p>
+          <div class="join-row">
+            <input id="joinCode" class="field-input field-input--code" [(ngModel)]="joinCode"
+                   placeholder="CODE" maxlength="4" autocomplete="off" />
+            <button class="common-btn"
+                    [disabled]="!nickname.trim() || !joinCode.trim()" (click)="joinRoom()">
+              JOIN
+            </button>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <button class="back-btn" [routerLink]="['/']">← BACK</button>
@@ -30,10 +45,10 @@
 
   @if (isWaiting) {
     <div class="waiting-box">
-      <p class="field-label">SHARE THIS CODE</p>
+      <p class="field-label">SHARE THIS CODE WITH YOUR OPPONENT</p>
       <div class="room-code">{{ roomCode }}</div>
       <p class="waiting-text">Waiting for opponent...</p>
-      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
     </div>
     <button class="back-btn" (click)="cancel()">CANCEL</button>
   }
