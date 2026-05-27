@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/components/header/header.component';
-import { SidenavComponent } from './core/components/sidenav/sidenav.component';
 import { FooterComponent } from './core/components/footer/footer.component';
 
 @NgModule({
@@ -16,7 +15,6 @@ import { FooterComponent } from './core/components/footer/footer.component';
     BrowserModule,
     AppRoutingModule,
     HeaderComponent,
-    SidenavComponent,
     FooterComponent,
     HttpClientModule
   ],
