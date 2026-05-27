@@ -31,15 +31,18 @@
   transition: background-color 0.5s ease;
   &--ship { background: rgba(76, 175, 80, 0.35); }
   &--shipwreck {
+    background-color: rgba(231, 76, 60, 0.45);
     background-image: url("../../../assets/icons/explode.png");
     pointer-events: none;
     animation: shake 0.25s;
   }
   &--has-been-shot {
+    background-color: rgba(79, 142, 247, 0.25);
     background-image: url("../../../assets/icons/cross-modified.png");
     pointer-events: none;
   }
   &--clickable {
+    cursor: crosshair;
     @media (hover: hover) {
       &:hover { background-color: red; cursor: pointer; }
     }
