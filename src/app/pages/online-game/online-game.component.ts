@@ -21,11 +21,14 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   isMyTurn: WritableSignal<boolean> = signal(false);
   timeLeft: WritableSignal<number> = signal(30);
   gameOver: WritableSignal<boolean> = signal(false);
+  // Controls which board is shown on mobile: true = ATTACK BOARD, false = MY BOARD
+  showAttack: WritableSignal<boolean> = signal(false);
 
   myNickname = '';
   opponentNickname = '';
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private resultTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private socketService: SocketService,
@@ -34,7 +37,6 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Clean up any lingering listeners from a previous mount
     ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected']
       .forEach(e => this.socketService.off(e));
 
@@ -54,7 +56,13 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
     this.socketService.on<{ socketId: string; timeLimit: number }>('turn_start', ({ socketId, timeLimit }) => {
       if (this.gameOver()) return;
-      this.isMyTurn.set(socketId === this.socketService.socketId);
+      const mine = socketId === this.socketService.socketId;
+      this.isMyTurn.set(mine);
+      if (mine) {
+        // My turn starts — clear any pending result delay and show attack board
+        this.clearResultTimeout();
+        this.showAttack.set(true);
+      }
       this.startTimer(timeLimit);
     });
 
@@ -66,6 +74,12 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
         const b = [...this.attackBoard()];
         b[data.cellIndex] = { ...b[data.cellIndex], hasBeenShot: true, ship: data.hit ? (data.shipName ?? 'hit') : undefined };
         this.attackBoard.set(b);
+        // Keep ATTACK BOARD visible for 2s so user sees the hit/miss result
+        this.clearResultTimeout();
+        this.resultTimeout = setTimeout(() => {
+          if (!this.isMyTurn()) this.showAttack.set(false);
+          this.resultTimeout = null;
+        }, 2000);
       } else {
         const b = [...this.myBoard()];
         b[data.cellIndex] = { ...b[data.cellIndex], hasBeenShot: true };
@@ -75,12 +89,14 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
     this.socketService.on<{ winner: string }>('game_over', ({ winner }) => {
       this.stopTimer();
+      this.clearResultTimeout();
       this.gameOver.set(true);
       this.alertService.showModal(winner === this.socketService.socketId ? 'YOU WIN!' : 'YOU LOSE!');
     });
 
     this.socketService.on('opponent_disconnected', () => {
       this.stopTimer();
+      this.clearResultTimeout();
       this.gameOver.set(true);
       this.alertService.showModal('OPPONENT DISCONNECTED — YOU WIN!');
     });
@@ -88,6 +104,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTimer();
+    this.clearResultTimeout();
     ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected'].forEach(e => this.socketService.off(e));
   }
 
@@ -96,6 +113,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.socketService.emit('fire', { cellIndex: idx });
     this.isMyTurn.set(false);
     this.stopTimer();
+    // Keep attack board shown — shot_result handler will start the 2s delay
   }
 
   exitGame(): void {
@@ -119,5 +137,9 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
 
   private stopTimer(): void {
     if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
+  }
+
+  private clearResultTimeout(): void {
+    if (this.resultTimeout) { clearTimeout(this.resultTimeout); this.resultTimeout = null; }
   }
 }
