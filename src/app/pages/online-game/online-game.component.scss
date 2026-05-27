@@ -101,6 +101,39 @@
   pointer-events: none;
 }
 
+@media (max-width: 680px) {
+  .game-container { padding: 10px 6px; gap: 8px; }
+
+  .top-bar { gap: 6px; }
+  .ptag {
+    font-size: 10px;
+    max-width: 22vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .timer {
+    padding: 5px 10px;
+    min-width: 64px;
+    &__count { font-size: 20px; }
+  }
+
+  .boards {
+    gap: 1rem;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+  }
+
+  // each board = (viewport - 2 left-margins - gap) / 2
+  // margin-left 1.625rem = 26px so letters at left:-26px don't clip
+  .board {
+    width: calc((100vw - 4.25rem) / 2);
+    max-width: 180px;
+    flex: none;
+    margin-left: 1.625rem;
+  }
+}
+
 @keyframes shake {
   0%   { transform: translate(1px, 1px) rotate(0deg); }
   10%  { transform: translate(-1px, -2px) rotate(-1deg); }

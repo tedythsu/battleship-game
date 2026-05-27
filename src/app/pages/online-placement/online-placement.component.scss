@@ -75,3 +75,36 @@
   &:disabled { opacity: 0.4; cursor: default; }
 }
 .confirm-btn { margin-top: 8px; &:disabled { opacity: 0.5; cursor: not-allowed; } }
+
+@media (max-width: 680px) {
+  .placement-container { padding: 16px 8px; gap: 12px; }
+
+  .placement-area {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 3.5rem;
+  }
+
+  // board takes most of screen width; margin-left makes room for letter coords
+  .board {
+    width: calc(100vw - 3.25rem);
+    max-width: 340px;
+    flex: none;
+    margin-left: 1.625rem;
+  }
+
+  // ship panel goes horizontal/wrap below the board
+  .ship-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    width: calc(100vw - 2rem);
+    max-width: 400px;
+  }
+
+  .ship-item { padding: 8px 10px; }
+  .ctrl-btn { flex: 1 0 auto; }
+  .confirm-btn { width: 100%; order: 10; margin-top: 0; }
+}
