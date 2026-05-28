@@ -19,10 +19,11 @@
         @for (cell of board(); track cell.location; let i = $index) {
           <div class="board__cell"
             [class.board__cell--ship]="!!cell.ship"
-            [class.board__cell--hover]="isHovered(i)"
-            (pointerenter)="onHover(i)"
-            (pointerleave)="hovered = []"
-            (click)="onClick(i)">
+            [class.board__cell--hover-valid]="isHoveredValid(i)"
+            [class.board__cell--hover-invalid]="isHoveredInvalid(i)"
+            (pointerenter)="onCellEnter(i)"
+            (pointerleave)="onCellLeave()"
+            (click)="onCellClick(i)">
           </div>
         }
       </div>
@@ -35,21 +36,48 @@
             [class.ship-item--selected]="selected === ship"
             [attr.aria-pressed]="!ship.placed() ? (selected === ship) : null"
             [attr.aria-disabled]="ship.placed() ? 'true' : null"
-            [attr.aria-label]="ship.name + ', size ' + ship.size + (ship.placed() ? ', placed' : '')"
-            (click)="selectShip(ship)">
+            [attr.aria-label]="ship.name + ', size ' + ship.size + (ship.placed() ? ', placed — drag to reposition' : '')"
+            (pointerdown)="onShipPointerDown($event, ship)">
+            <span class="ship-preview" aria-hidden="true">
+              @for (_ of [].constructor(ship.size); track $index) {
+                <span class="ship-preview__cell"></span>
+              }
+            </span>
             <span class="ship-name" aria-hidden="true">{{ ship.name }}</span>
             <span class="ship-meta" aria-hidden="true">×{{ ship.size }}</span>
-            @if (ship.placed()) { <span aria-hidden="true">✓</span> }
+            @if (ship.placed()) { <span class="ship-check" aria-hidden="true">✓</span> }
           </button>
         }
-        <button class="ctrl-btn" [disabled]="!selected" (click)="rotate()">↻ {{ dir }}</button>
-        <button class="ctrl-btn" (click)="randomize()">RANDOM</button>
-        <button class="ctrl-btn" (click)="reset()">RESET</button>
+
+        <div class="ctrl-group">
+          <button class="ctrl-btn" (click)="rotate()">↻ {{ dir() }}</button>
+          <button class="ctrl-btn" (click)="randomize()">RANDOM</button>
+          <button class="ctrl-btn" (click)="reset()">RESET</button>
+        </div>
+
         <button class="common-btn confirm-btn" [disabled]="!allPlaced" (click)="confirm()">
           {{ allPlaced ? 'CONFIRM' : shipsRemaining + ' LEFT' }}
         </button>
+
+        <p class="hint-label">
+          @if (dragging()) { RIGHT-CLICK OR [R] TO ROTATE }
+          @else if (selected) { CLICK BOARD TO PLACE · [R] TO ROTATE · [ESC] CANCEL }
+          @else { DRAG OR CLICK A SHIP TO PLACE }
+        </p>
       </div>
 
     </div>
   }
 </main>
+
+@if (dragging()) {
+  <div class="ship-ghost"
+    [class.ship-ghost--vertical]="isGhostVert()"
+    [class.ship-ghost--invalid]="dragCells().length > 0 && !dragValid()"
+    [style.left.px]="ghostX()"
+    [style.top.px]="ghostY()">
+    @for (_ of ghostCells(); track $index) {
+      <div class="ship-ghost__cell"></div>
+    }
+  </div>
+}

@@ -114,6 +114,9 @@ header {
   border: 0;
 }
 
+/* ── Drag cursor override ── */
+body.is-dragging, body.is-dragging * { cursor: grabbing !important; }
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
