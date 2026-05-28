@@ -60,7 +60,10 @@
   </div>
 
   <div class="exit-controls">
-    @if (exitPending) {
+    @if (gameOver()) {
+      <button class="common-btn" (click)="playAgain()">PLAY AGAIN</button>
+      <button class="common-btn" (click)="exitGame()">EXIT</button>
+    } @else if (exitPending) {
       <span class="exit-prompt">LEAVE GAME?</span>
       <button class="common-btn" (click)="exitGame()">YES</button>
       <button class="common-btn" (click)="cancelExit()">NO</button>

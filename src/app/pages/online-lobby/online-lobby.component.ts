@@ -19,8 +19,44 @@ export class OnlineLobbyComponent implements OnInit, OnDestroy {
 
   constructor(public socketService: SocketService, private router: Router) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    ['room_created', 'room_joined', 'placement_phase', 'room_error', 'connect_error', 'disconnect']
+      .forEach(e => this.socketService.off(e));
+  }
+
+  createRoom(): void {
+    if (!this.nickname.trim()) return;
     this.socketService.connect();
+    this.setupSocketListeners();
+    this.socketService.gameState.myNickname = this.nickname.trim().toUpperCase();
+    this.errorMessage = '';
+    this.socketService.emit('create_room', { nickname: this.socketService.gameState.myNickname });
+  }
+
+  joinRoom(): void {
+    if (!this.nickname.trim() || !this.joinCode.trim()) return;
+    this.socketService.connect();
+    this.setupSocketListeners();
+    this.socketService.gameState.myNickname = this.nickname.trim().toUpperCase();
+    this.errorMessage = '';
+    this.socketService.emit('join_room', {
+      roomCode: this.joinCode.trim().toUpperCase(),
+      nickname: this.socketService.gameState.myNickname,
+    });
+  }
+
+  cancel(): void {
+    this.socketService.disconnect();
+    this.isWaiting = false;
+    this.roomCode = '';
+    this.errorMessage = '';
+  }
+
+  private setupSocketListeners(): void {
+    ['room_created', 'room_joined', 'placement_phase', 'room_error', 'connect_error', 'disconnect']
+      .forEach(e => this.socketService.off(e));
 
     this.socketService.on<{ roomCode: string }>('room_created', ({ roomCode }) => {
       this.roomCode = roomCode;
@@ -39,35 +75,17 @@ export class OnlineLobbyComponent implements OnInit, OnDestroy {
     this.socketService.on<{ message: string }>('room_error', ({ message }) => {
       this.errorMessage = message;
     });
-  }
 
-  ngOnDestroy(): void {
-    ['room_created', 'room_joined', 'placement_phase', 'room_error'].forEach(e => this.socketService.off(e));
-  }
-
-  createRoom(): void {
-    if (!this.nickname.trim()) return;
-    this.socketService.connect();
-    this.socketService.gameState.myNickname = this.nickname.trim().toUpperCase();
-    this.errorMessage = '';
-    this.socketService.emit('create_room', { nickname: this.socketService.gameState.myNickname });
-  }
-
-  joinRoom(): void {
-    if (!this.nickname.trim() || !this.joinCode.trim()) return;
-    this.socketService.connect();
-    this.socketService.gameState.myNickname = this.nickname.trim().toUpperCase();
-    this.errorMessage = '';
-    this.socketService.emit('join_room', {
-      roomCode: this.joinCode.trim().toUpperCase(),
-      nickname: this.socketService.gameState.myNickname,
+    this.socketService.on('connect_error', () => {
+      this.errorMessage = 'CONNECTION FAILED. PLEASE TRY AGAIN.';
+      this.isWaiting = false;
     });
-  }
 
-  cancel(): void {
-    this.socketService.disconnect();
-    this.isWaiting = false;
-    this.roomCode = '';
-    this.errorMessage = '';
+    this.socketService.on('disconnect', () => {
+      if (this.isWaiting) {
+        this.errorMessage = 'DISCONNECTED FROM SERVER.';
+        this.isWaiting = false;
+      }
+    });
   }
 }

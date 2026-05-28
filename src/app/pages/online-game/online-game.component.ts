@@ -160,6 +160,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   }
 
   requestExit(): void {
+    if (this.gameOver()) { this.exitGame(); return; }
     this.exitPending = true;
     this.exitTimeout = setTimeout(() => {
       this.exitPending = false;
@@ -176,6 +177,11 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.clearExitTimeout();
     this.socketService.disconnect();
     this.router.navigate(['']);
+  }
+
+  playAgain(): void {
+    this.socketService.disconnect();
+    this.router.navigate(['online']);
   }
 
   private showAnnouncement(text: string, type: AnnouncementType): void {

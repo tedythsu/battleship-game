@@ -15,20 +15,20 @@ body {
   /* ── Color tokens (oklch, hue 220 = blue-steel) ── */
   --c-bg:         oklch(0.04 0.008 220);
   --c-surface:    oklch(0.12 0.012 220);
-  --c-border:     oklch(0.35 0.015 220);
-  --c-border-dim: oklch(0.24 0.010 220);
+  --c-border:     oklch(0.42 0.016 220);
+  --c-border-dim: oklch(0.30 0.012 220);
 
-  --c-text:       oklch(0.94 0.006 220);
-  --c-text-dim:   oklch(0.58 0.010 220);
-  --c-text-muted: oklch(0.46 0.008 220);
+  --c-text:       oklch(0.97 0.004 220);
+  --c-text-dim:   oklch(0.75 0.012 220);
+  --c-text-muted: oklch(0.60 0.010 220);
 
-  --c-accent:     oklch(0.60 0.042 220);
-  --c-accent-sub: oklch(0.44 0.035 220);
+  --c-accent:     oklch(0.68 0.045 220);
+  --c-accent-sub: oklch(0.52 0.038 220);
 
-  --c-hit:        oklch(0.54 0.18  25);
-  --c-sunk:       oklch(0.65 0.14  55);
-  --c-ship:       oklch(0.48 0.10 145);
-  --c-miss:       oklch(0.46 0.08 220);
+  --c-hit:        oklch(0.62 0.19  25);
+  --c-sunk:       oklch(0.72 0.15  55);
+  --c-ship:       oklch(0.56 0.11 145);
+  --c-miss:       oklch(0.55 0.09 220);
 
   /* ── 4pt spacing scale ── */
   --sp-1:  4px;
@@ -112,4 +112,13 @@ header {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
