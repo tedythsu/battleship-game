@@ -7,9 +7,13 @@ const { TimerManager } = require('./timerManager');
 const app = express();
 app.use(require('cors')());
 const httpServer = createServer(app);
+const ALLOWED_ORIGINS = process.env.CLIENT_ORIGIN
+  ? process.env.CLIENT_ORIGIN.split(',').map(o => o.trim())
+  : ['https://battleship-game-vert.vercel.app', 'http://localhost:4200'];
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_ORIGIN || '*',
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST'],
   },
 });
