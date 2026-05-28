@@ -46,6 +46,7 @@
             [attr.tabindex]="isMyTurn() && !gameOver() && !cell.hasBeenShot ? 0 : -1"
             [attr.aria-label]="'Fire at ' + cell.location + (cell.hasBeenShot ? ', already shot' : '')"
             [attr.aria-disabled]="!isMyTurn() || gameOver() || cell.hasBeenShot"
+            [class.board__cell--ship]="gameOver() && !!cell.ship && !cell.hasBeenShot"
             [class.board__cell--shipwreck]="cell.hasBeenShot && !!cell.ship"
             [class.board__cell--has-been-shot]="cell.hasBeenShot && !cell.ship"
             [class.board__cell--shake]="shakeAttackBoard() === i"

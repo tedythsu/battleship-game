@@ -71,7 +71,13 @@ io.on('connection', (socket) => {
       gameOver: result.gameOver,
     });
     if (result.gameOver) {
-      io.to(result.room.code).emit('game_over', { winner: socket.id, reason: 'all_ships_sunk' });
+      result.room.players.forEach(player => {
+        const opponent = result.room.players.find(p => p.socketId !== player.socketId);
+        io.to(player.socketId).emit('game_over', {
+          winner: socket.id,
+          opponentBoard: opponent.board,
+        });
+      });
     } else {
       startTurn(result.room);
     }

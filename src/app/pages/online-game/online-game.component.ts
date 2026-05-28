@@ -128,9 +128,15 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.socketService.on<{ winner: string }>('game_over', ({ winner }) => {
+    this.socketService.on<{ winner: string; opponentBoard: BoardCell[] }>('game_over', ({ winner, opponentBoard }) => {
       this.stopTimer();
       this.clearResultTimeout();
+      if (opponentBoard) {
+        this.attackBoard.set(this.attackBoard().map((cell, i) => ({
+          ...cell,
+          ship: cell.ship ?? opponentBoard[i]?.ship,
+        })));
+      }
       this.gameOver.set(true);
       this.alertService.showModal(winner === this.socketService.socketId ? 'YOU WIN!' : 'YOU LOSE!');
     });
