@@ -221,7 +221,7 @@ export class OnlinePlacementComponent implements OnInit, OnDestroy {
           const idxs = this.indexes(start, dir, ship.size);
           const total = this.N * this.N;
           const noOob     = idxs.every(i => i >= 0 && i < total);
-          const noOverlap = idxs.every(i => !b[i].ship);
+          const noOverlap = noOob && idxs.every(i => !b[i].ship);
           const noWrap    = [Dir.Right, Dir.Left].includes(dir)
             ? idxs.map(i => Math.floor(i / this.N)).every((r, _, a) => r === a[0])
             : true;
