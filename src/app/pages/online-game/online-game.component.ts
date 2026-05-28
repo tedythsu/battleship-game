@@ -24,6 +24,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
   isMyTurn: WritableSignal<boolean> = signal(false);
   timeLeft: WritableSignal<number> = signal(30);
   gameOver: WritableSignal<boolean> = signal(false);
+  opponentConnLost: WritableSignal<boolean> = signal(false);
   showAttack: WritableSignal<boolean> = signal(false);
   isMobile: WritableSignal<boolean> = signal(false);
   announcement: WritableSignal<Announcement | null> = signal(null);
@@ -58,7 +59,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.isMobile.set(this.mql.matches);
     this.mql.addEventListener('change', this.mqlListener);
 
-    ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected']
+    ['turn_start', 'shot_result', 'game_over', 'opponent_connection_lost', 'opponent_disconnected']
       .forEach(e => this.socketService.off(e));
 
     const gs = this.socketService.gameState;
@@ -141,9 +142,15 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
       this.alertService.showModal(winner === this.socketService.socketId ? 'YOU WIN!' : 'YOU LOSE!');
     });
 
+    this.socketService.on('opponent_connection_lost', () => {
+      this.stopTimer();
+      this.opponentConnLost.set(true);
+    });
+
     this.socketService.on('opponent_disconnected', () => {
       this.stopTimer();
       this.clearResultTimeout();
+      this.opponentConnLost.set(false);
       this.gameOver.set(true);
       this.alertService.showModal('OPPONENT DISCONNECTED — YOU WIN!');
     });
@@ -155,7 +162,7 @@ export class OnlineGameComponent implements OnInit, OnDestroy {
     this.clearResultTimeout();
     this.clearAnnouncementTimeout();
     this.clearExitTimeout();
-    ['turn_start', 'shot_result', 'game_over', 'opponent_disconnected'].forEach(e => this.socketService.off(e));
+    ['turn_start', 'shot_result', 'game_over', 'opponent_connection_lost', 'opponent_disconnected'].forEach(e => this.socketService.off(e));
   }
 
   fire(idx: number): void {

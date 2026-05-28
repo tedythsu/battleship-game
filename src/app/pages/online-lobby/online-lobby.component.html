@@ -10,7 +10,15 @@
                placeholder="ENTER YOUR NAME" maxlength="12" autocomplete="off" />
       </div>
 
-      @if (errorMessage) {
+      @if (isConnecting) {
+        <div class="connecting-box" role="status">
+          <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p class="connecting-text">CONNECTING TO SERVER</p>
+          @if (showColdStartHint) {
+            <p class="cold-start-hint">Server is waking up — this may take up to 60 seconds on first connect.</p>
+          }
+        </div>
+      } @else if (errorMessage) {
         <p class="error-msg" role="alert">{{ errorMessage }}</p>
       }
 
@@ -18,7 +26,7 @@
         <div class="action-panel">
           <p class="action-label">CREATE NEW ROOM</p>
           <button class="common-btn action-btn"
-                  [disabled]="!nickname.trim()" (click)="createRoom()">
+                  [disabled]="!nickname.trim() || isConnecting" (click)="createRoom()">
             CREATE
           </button>
         </div>
@@ -31,7 +39,7 @@
             <input id="joinCode" class="field-input field-input--code" [(ngModel)]="joinCode"
                    placeholder="CODE" maxlength="4" autocomplete="off" />
             <button class="common-btn"
-                    [disabled]="!nickname.trim() || !joinCode.trim()" (click)="joinRoom()">
+                    [disabled]="!nickname.trim() || !joinCode.trim() || isConnecting" (click)="joinRoom()">
               JOIN
             </button>
           </div>

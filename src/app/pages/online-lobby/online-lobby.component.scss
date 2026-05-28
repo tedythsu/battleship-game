@@ -105,6 +105,32 @@
   text-align: center;
 }
 
+/* ── Connecting state ── */
+.connecting-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+}
+
+.connecting-text {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--c-accent);
+  margin: 0;
+}
+
+.cold-start-hint {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--c-text-muted);
+  text-align: center;
+  margin: 0;
+  max-width: 260px;
+  line-height: 1.6;
+}
+
 /* ── Waiting state ── */
 .waiting-box {
   display: flex;

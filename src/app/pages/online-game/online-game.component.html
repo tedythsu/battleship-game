@@ -1,3 +1,9 @@
+@if (opponentConnLost()) {
+  <div class="conn-lost-banner" role="status">
+    OPPONENT CONNECTION LOST — WAITING 5s...
+  </div>
+}
+
 <main class="game-container">
   <div class="top-bar">
     <span class="ptag ptag--me">● {{ myNickname }}</span>

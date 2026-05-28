@@ -143,6 +143,28 @@
   color: var(--c-hit);
 }
 
+/* ── Connection lost banner ── */
+.conn-lost-banner {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--c-sunk);
+  background: color-mix(in oklch, var(--c-sunk) 10%, var(--c-bg));
+  border-bottom: 1px solid color-mix(in oklch, var(--c-sunk) 30%, transparent);
+  padding: var(--sp-2);
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── Announcement ── */
 .announcement {
   position: fixed;

@@ -23,6 +23,7 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 const roomManager = new RoomManager();
 const timerManager = new TimerManager();
 const TURN_MS = 30000;
+const disconnectTimers = new Map();
 
 function startTurn(room) {
   io.to(room.code).emit('turn_start', { socketId: room.currentTurn, timeLimit: 30 });
@@ -91,9 +92,19 @@ io.on('connection', (socket) => {
     const room = roomManager.getRoomBySocket(socket.id);
     if (room && room.status === 'playing') {
       timerManager.clear(room.code);
-      socket.to(room.code).emit('opponent_disconnected');
+      const roomCode = room.code;
+      const socketId = socket.id;
+      // Notify opponent immediately, but wait 5s before declaring win
+      io.to(roomCode).emit('opponent_connection_lost');
+      const timer = setTimeout(() => {
+        io.to(roomCode).emit('opponent_disconnected');
+        roomManager.removePlayer(socketId);
+        disconnectTimers.delete(socketId);
+      }, 5000);
+      disconnectTimers.set(socketId, timer);
+    } else {
+      roomManager.removePlayer(socket.id);
     }
-    roomManager.removePlayer(socket.id);
   });
 });
 
